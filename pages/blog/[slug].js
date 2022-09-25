@@ -1,5 +1,8 @@
 import Head from 'next/head'
-import { blogPosts } from '../../lib/postData'
+import { format, parseISO } from 'date-fns'
+import { getAllPosts } from '../../lib/postData'
+import { serialize } from 'next-mdx-remote/serialize'
+import { MDXRemote } from 'next-mdx-remote'
 
 export default function BlogPage({ title, date, content}) {
   return (
@@ -10,12 +13,17 @@ export default function BlogPage({ title, date, content}) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <h1>
-          {title}
-        </h1>
-        <h2>{date}</h2>
-        <div>{content}</div>
+      <main className="prose">
+        <div className="border-b-2 border-gray-200">
+          <h2 className="text-2xl font-bold">
+            {title}
+          </h2>
+          <div className="text-gray-600 text-xd">
+            {format(parseISO(date), 'MMM do, uuu')}
+          </div>
+        </div>
+        <MDXRemote {...content} />
+        {/* <div className="whitespace-pre">{...content}</div> */}
       </main>
     </div>
   )
@@ -23,20 +31,26 @@ export default function BlogPage({ title, date, content}) {
 
 export async function getStaticProps(context) {
     const { params } = context;
+    const allPosts = getAllPosts();
+    const { data, content} = allPosts.find((item) => item.slug === params.slug);
+    const mdxSource = await serialize(content)
     return {
-        props: blogPosts.find((item) => item.slug === params.slug),
-    };
+        props: {
+            title: data.title,
+            date: data.date.toISOString(),
+            content: mdxSource,
+        }
+    }
 }
 
 export async function getStaticPaths() {
-    const foo = {
-        paths: blogPosts.map((item) => ({
-            params: {
-                slug: item.slug,
-            },
-        })),
-        fallback: false,
-    }
-    return foo;
+  return {
+      paths: getAllPosts().map((post) => ({
+          params: {
+              slug: post.slug,
+          },
+      })),
+      fallback: false,
+  }
 }
 
