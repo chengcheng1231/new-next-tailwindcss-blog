@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+/* @layer base {
     a {
         @apply text-pink-600 hover:text-pink-500;
     }
-}
+} */
