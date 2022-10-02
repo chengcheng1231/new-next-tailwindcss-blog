@@ -17,7 +17,7 @@ export default function Home({ posts }) {
   return (
     <div>
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
-      <div className="relative max-w-lg mx-auto my-0">
+      <div className="relative max-w-lg mx-auto md:mx-0 my-0">
         <input
           aria-label="Search articles"
           type="text"
@@ -40,7 +40,7 @@ export default function Home({ posts }) {
           />
         </svg>
       </div>
-      <div className="container py-12 mx-auto my-0">
+      <div className="container py-6 mx-auto my-0">
         <ul className="grid md:grid-cols-3 gap-4 auto-cols-fr">
           {posts.map((post) => (
             <Card

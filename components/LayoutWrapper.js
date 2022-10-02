@@ -3,7 +3,7 @@ import headerNavLinks from '@/data/headerNavLinks'
 import Link from './Link'
 import SectionContainer from './SectionContainer'
 // import Footer from './Footer'
-// import MobileNav from './MobileNav'
+import MobileNav from './MobileNav'
 import ThemeSwitch from './ThemeSwitch'
 import { useTheme } from 'next-themes'
 
@@ -15,17 +15,17 @@ const LayoutWrapper = ({ children }) => {
       <div className="flex h-screen flex-col justify-between">
         <header className="flex items-center justify-between py-10">
           <div>
-            <Link href="/" aria-label={siteMetadata.headerTitle}>
+            <Link href="/" aria-label={siteMetadata.blogName}>
               <div className="flex items-center justify-between">
-                <div className="mr-3 h-14 w-14">
+                <div className="mr-3 h-10 w-10 md:h-14 md:w-14">
                   <img src={siteMetadata.logoImage} alt="" className="h-full w-full" />
                 </div>
-                {typeof siteMetadata.headerTitle === 'string' ? (
-                  <div className="hidden h-6 text-2xl font-semibold sm:block leading-6">
-                    {siteMetadata.headerTitle}
+                {typeof siteMetadata.blogName === 'string' ? (
+                  <div className="h-6 text-xl md:text-2xl font-semibold sm:block leading-6">
+                    {siteMetadata.blogName}
                   </div>
                 ) : (
-                  siteMetadata.headerTitle
+                  siteMetadata.blogName
                 )}
               </div>
             </Link>
@@ -43,7 +43,7 @@ const LayoutWrapper = ({ children }) => {
               ))}
             </div>
             <ThemeSwitch />
-            {/* <MobileNav /> */}
+            <MobileNav />
           </div>
         </header>
         <main className="mb-auto">{children}</main>
