@@ -2,10 +2,15 @@ import Head from 'next/head'
 import siteMetadata from '@/data/siteMetadata'
 import { format, parseISO } from 'date-fns'
 import { getAllPosts } from '../../lib/postData'
-import { serialize } from 'next-mdx-remote/serialize'
-import { MDXRemote } from 'next-mdx-remote'
+import { MDXLayoutRenderer } from '@/components/MDXComponents'
+// import { serialize } from 'next-mdx-remote/serialize'
+// import { MDXRemote } from 'next-mdx-remote'
+import { getFileBySlug } from '@/lib/mdx'
 
-export default function BlogPage({ title, date, content}) {
+
+export default function BlogPage({ title, date, content, post}) {
+  const { mdxSource, toc, frontMatter } = post
+
   return (
     <div>
       <Head>
@@ -34,8 +39,14 @@ export default function BlogPage({ title, date, content}) {
             </div>
           </div>
         </div>
-        <MDXRemote {...content} />
+        {/* <MDXRemote {...content} /> */}
         {/* <div className="whitespace-pre">{...content}</div> */}
+        {/* <MDXLayoutRenderer
+          layout={'PostSimple' || DEFAULT_LAYOUT}
+          toc={toc}
+          mdxSource={mdxSource}
+          frontMatter={frontMatter}
+        /> */}
       </main>
     </div>
   )
@@ -45,12 +56,14 @@ export async function getStaticProps(context) {
     const { params } = context;
     const allPosts = getAllPosts();
     const { data, content} = allPosts.find((item) => item.slug === params.slug);
-    const mdxSource = await serialize(content)
+    // const mdxSource = await serialize(content)
+    const post = await getFileBySlug('blog', params.slug)
     return {
         props: {
             title: data.title,
             date: data.date.toISOString(),
-            content: mdxSource,
+            content,
+            post,
         }
     }
 }
