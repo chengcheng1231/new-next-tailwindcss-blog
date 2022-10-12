@@ -1,9 +1,11 @@
 
 import Link from '@/components/Link'
-// import PageTitle from '@/components/PageTitle'
+import PageTitle from '@/components/PageTitle'
+import { format, parseISO } from 'date-fns'
 import SectionContainer from '@/components/SectionContainer'
 import { BlogSEO } from '@/components/SEO'
 import siteMetadata from '@/data/siteMetadata'
+import Tag from '@/components/Tag'
 // import formatDate from '@/lib/utils/formatDate'
 // import Comments from '@/components/comments'
 // import ScrollTopAndComment from '@/components/ScrollTopAndComment'
@@ -15,21 +17,28 @@ export default function PostLayout({ frontMatter, authorDetails, next, prev, chi
     <SectionContainer>
       <BlogSEO url={`${siteMetadata.siteUrl}/blog/${frontMatter.slug}`} {...frontMatter} />
       {/* <ScrollTopAndComment /> */}
-      <article>
+      <article className="max-w-screen-md mx-auto">
         <div>
           <header>
             <div className="space-y-1 border-b border-gray-200 pb-10 text-center dark:border-gray-700">
+              <div>
+                <PageTitle>{frontMatter.title}</PageTitle>
+              </div>
               <dl>
                 <div>
                   <dt className="sr-only">Published on</dt>
-                  {/* <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                    <time dateTime={date}>{formatDate(date)}</time>
-                  </dd> */}
+                  <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                    <time dateTime={frontMatter.date}>{format(parseISO(frontMatter.date), 'MMM do, uuu')}</time>
+                  </dd>
                 </div>
               </dl>
-              {/* <div>
-                <PageTitle>{title}</PageTitle>
-              </div> */}
+              {frontMatter.tags?.length > 0 && (
+                <div className="flex flex-wrap justify-center">
+                  {frontMatter.tags?.map((tag) => (
+                    <Tag key={tag} text={tag} />
+                  ))}
+                </div>
+              )}
             </div>
           </header>
           <div

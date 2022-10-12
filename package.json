@@ -9,9 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mdx-js/esbuild": "^2.1.4",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/line-clamp": "^0.4.2",
     "date-fns": "^2.29.2",
+    "github-slugger": "^1.4.0",
     "gray-matter": "^4.0.3",
     "mdx-bundler": "^9.0.1",
     "next": "12.3.0",
@@ -19,6 +21,8 @@
     "next-themes": "^0.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "rehype-prism-plus": "^1.5.0",
+    "rehype-slug": "^5.0.1",
     "slash": "^5.0.0"
   },
   "devDependencies": {

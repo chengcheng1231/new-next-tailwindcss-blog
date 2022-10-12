@@ -5,6 +5,8 @@ import { format, parseISO } from 'date-fns'
 import siteMetadata from '@/data/siteMetadata'
 import Link from 'next/link'
 import Card from '@/components/Card'
+import { getAllFile } from '@/lib/mdx'
+import { MDXCardRenderer } from '@/components/MDXComponents'
 // import { getAllFilesFrontMatter } from '../lib/mdx'
 
 // export async function getStaticProps() {
@@ -13,7 +15,7 @@ import Card from '@/components/Card'
 //   return { props: { posts } }
 // }
 
-export default function Home({ posts }) {
+export default function Home({ posts, sortDatePosts }) {
   return (
     <div>
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
@@ -42,7 +44,7 @@ export default function Home({ posts }) {
       </div>
       <div className="container py-6 mx-auto my-0">
         <ul className="grid md:grid-cols-3 gap-4 auto-cols-fr">
-          {posts.map((post) => (
+          {/* {posts.map((post) => (
             <Card
               key={post.title}
               title={post.title}
@@ -51,11 +53,15 @@ export default function Home({ posts }) {
               href={post.slug}
               date={post.date}
             />
-            // <Link href={`/blog/${post.slug}`} key={post.slug}>
-            //   <div>
-            //     <BlogListItem key={post.slug} {...post} />
-            //   </div>
-            // </Link>
+          ))} */}
+          {sortDatePosts.map((post) => (
+            <MDXCardRenderer
+              key={post.frontMatter.slug}
+              toc={post.toc}
+              mdxSource={post.mdxSource}
+              frontMatter={post.frontMatter}
+              href={post.frontMatter.slug}
+            />
           ))}
         </ul>
       </div>
@@ -66,24 +72,16 @@ export default function Home({ posts }) {
 export async function getStaticProps(context) {
   const allPosts = getAllPosts();
 
-  return { props: {
-    posts: allPosts.map(({ data, content, slug}) => ({
-      ...data,
-      date: data.date.toISOString(),
-      content,
-      slug,
-    }))
-  } }
-}
+  const getMdxPosts = await getAllFile();
+  const sortDatePosts = getMdxPosts.sort((a, b) => Date.parse(b.frontMatter.date) - Date.parse(a.frontMatter.date));
 
-function BlogListItem({ slug, title, date, content}) {
- return (
-  <div className="border border-pink-200 shadow rounded p-4 hover:cursor-pointer hover:shadow-md">
-    <a className="text-lg font-bold">{title}</a>
-    <div className="text-gray-600 text-xs">
-      {format(parseISO(date), 'MMM do, uuu')}
-    </div>
-    <div>{content.substr(0, 300)}</div>
-  </div>
- )
+  return { props: {
+    sortDatePosts,
+    // posts: allPosts.map(({ data, content, slug}) => ({
+    //   ...data,
+    //   date: data.date.toISOString(),
+    //   content,
+    //   slug,
+    // }))
+  } }
 }

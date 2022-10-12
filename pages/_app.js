@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import '../styles/prism.css'
 import Link from 'next/link'
 import Head from 'next/head'
 import { ThemeProvider } from 'next-themes'

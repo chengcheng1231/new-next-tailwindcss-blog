@@ -1,6 +1,6 @@
 ---
 title: This is second post
-date: 2022-09-11T12:26:03.379Z
+date: 2022-09-14
 draft: false
 imgSrc: '/static/images/test.jpeg'
 ---

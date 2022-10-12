@@ -11,7 +11,7 @@ export default function Home() {
 
       <main>
         <h1>
-          About me
+          Hi About me
         </h1>
       </main>
     </div>
