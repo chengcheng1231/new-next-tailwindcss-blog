@@ -17,7 +17,7 @@ const Card = ({ title, description, imgSrc, slug, date, tags }) => {
       >
         {imgSrc &&
           (slug ? (
-            <Link href={`/blog/${slug}`} aria-label={`Link to ${title}`} className="hover:h-60 hover:w-60">
+            <Link href={`/blog/life/${slug}`} aria-label={`Link to ${title}`} className="hover:h-60 hover:w-60">
               <Image
                 alt={title}
                 src={imgSrc}
@@ -41,7 +41,7 @@ const Card = ({ title, description, imgSrc, slug, date, tags }) => {
           <div className="text-xl font-bold leading-8 tracking-tight mb-2 hover:text-primary-600 dark:hover:text-primary-400">
             {slug ? (
               <Link
-                href={`/blog/${slug}`}
+                href={`/blog/life/${slug}`}
                 aria-label={`Link to ${title}`}
               >
                 {title}

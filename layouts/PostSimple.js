@@ -8,15 +8,15 @@ import siteMetadata from '@/data/siteMetadata'
 import Tag from '@/components/Tag'
 // import formatDate from '@/lib/utils/formatDate'
 // import Comments from '@/components/comments'
-// import ScrollTopAndComment from '@/components/ScrollTopAndComment'
+import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 
 export default function PostLayout({ frontMatter, authorDetails, next, prev, children }) {
   const { date, title } = frontMatter
 
   return (
     <SectionContainer>
-      <BlogSEO url={`${siteMetadata.siteUrl}/blog/${frontMatter.slug}`} {...frontMatter} />
-      {/* <ScrollTopAndComment /> */}
+      {/* <BlogSEO url={`${siteMetadata.siteUrl}/blog/${frontMatter.slug}`} {...frontMatter} /> */}
+      <ScrollTopAndComment />
       <article className="max-w-screen-md mx-auto">
         <div>
           <header>

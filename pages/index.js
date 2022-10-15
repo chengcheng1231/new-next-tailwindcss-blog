@@ -1,21 +1,25 @@
 import Head from 'next/head'
 import { PageSEO } from '@/components/SEO'
-import { getAllPosts } from '../lib/postData'
+// import { getAllPosts } from '../lib/postData'
 import { format, parseISO } from 'date-fns'
 import siteMetadata from '@/data/siteMetadata'
+import { useState } from 'react'
 import Link from 'next/link'
 import Card from '@/components/Card'
 import { getAllFile } from '@/lib/mdx'
 import { MDXCardRenderer } from '@/components/MDXComponents'
 // import { getAllFilesFrontMatter } from '../lib/mdx'
 
-// export async function getStaticProps() {
-//   const posts = await getAllFilesFrontMatter('_content')
+export default function Home({ sortDatePosts = [], initialDisplayPosts }) {
+  const [searchValue, setSearchValue] = useState('')
+  const filteredBlogPosts = sortDatePosts.filter((post) => {
+    const searchContent = post.frontMatter.title + post.frontMatter.description + post.frontMatter.tags.join(' ')
+    return searchContent.toLowerCase().includes(searchValue.toLowerCase())
+  })
 
-//   return { props: { posts } }
-// }
+  const displayPosts =
+    initialDisplayPosts.length > 0 && !searchValue ? sortDatePosts : filteredBlogPosts
 
-export default function Home({ posts, sortDatePosts }) {
   return (
     <div>
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
@@ -44,17 +48,7 @@ export default function Home({ posts, sortDatePosts }) {
       </div>
       <div className="container py-6 mx-auto my-0">
         <ul className="grid md:grid-cols-3 gap-4 auto-cols-fr">
-          {/* {posts.map((post) => (
-            <Card
-              key={post.title}
-              title={post.title}
-              description={post.content}
-              imgSrc={post.imgSrc}
-              href={post.slug}
-              date={post.date}
-            />
-          ))} */}
-          {sortDatePosts.map((post) => (
+          {displayPosts.map((post) => (
             <MDXCardRenderer
               key={post.frontMatter.slug}
               toc={post.toc}
@@ -63,20 +57,24 @@ export default function Home({ posts, sortDatePosts }) {
               href={post.frontMatter.slug}
             />
           ))}
+          {!displayPosts.length && 'No posts found.'}
         </ul>
       </div>
     </div>
   )
 }
 
+export const POSTS_PER_PAGE = 5
+
 export async function getStaticProps(context) {
-  const allPosts = getAllPosts();
+  // const allPosts = getAllPosts();
 
-  const getMdxPosts = await getAllFile();
+  const getMdxPosts = await getAllFile('_life');
   const sortDatePosts = getMdxPosts.sort((a, b) => Date.parse(b.frontMatter.date) - Date.parse(a.frontMatter.date));
-
+  const initialDisplayPosts = sortDatePosts.slice(0, POSTS_PER_PAGE)
   return { props: {
     sortDatePosts,
+    initialDisplayPosts,
     // posts: allPosts.map(({ data, content, slug}) => ({
     //   ...data,
     //   date: data.date.toISOString(),

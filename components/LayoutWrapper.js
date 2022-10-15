@@ -2,7 +2,7 @@ import siteMetadata from '@/data/siteMetadata'
 import headerNavLinks from '@/data/headerNavLinks'
 import Link from './Link'
 import SectionContainer from './SectionContainer'
-// import Footer from './Footer'
+import Footer from './Footer'
 import MobileNav from './MobileNav'
 import ThemeSwitch from './ThemeSwitch'
 import { useTheme } from 'next-themes'
@@ -47,7 +47,7 @@ const LayoutWrapper = ({ children }) => {
           </div>
         </header>
         <main className="mb-auto">{children}</main>
-        {/* <Footer /> */}
+        <Footer />
       </div>
     </SectionContainer>
   )
