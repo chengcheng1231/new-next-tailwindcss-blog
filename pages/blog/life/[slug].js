@@ -29,8 +29,7 @@ export default function BlogPage({ title, date, content, post}) {
 
 export async function getStaticProps(context) {
     const { params } = context;
-    console.log(params);
-    const post = await getFileBySlug('_life', params.slug)
+    const post = await getFileBySlug(params.slug)
     return {
       props: {
           post,
@@ -40,7 +39,7 @@ export async function getStaticProps(context) {
 
 export async function getStaticPaths() {
   return {
-      paths: getPostsSlug('_life').map((post) => ({
+      paths: getPostsSlug().map((post) => ({
           params: {
               slug: post.slug,
           },

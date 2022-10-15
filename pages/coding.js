@@ -65,7 +65,7 @@ export const POSTS_PER_PAGE = 5
 export async function getStaticProps(context) {
   // const allPosts = getAllPosts();
 
-  const getMdxPosts = await getAllFile('_coding');
+  const getMdxPosts = await getAllFile('coding');
   const sortDatePosts = getMdxPosts.sort((a, b) => Date.parse(b.frontMatter.date) - Date.parse(a.frontMatter.date));
   const initialDisplayPosts = sortDatePosts.slice(0, POSTS_PER_PAGE)
   return { props: {
