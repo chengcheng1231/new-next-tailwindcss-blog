@@ -24,10 +24,8 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  console.log({params});
   const allPosts = await getAllFilesFrontMatter('blog')
   const getMdxPosts = await getAllFile('all');
-  console.log({getMdxPosts});
   const filteredPosts = getMdxPosts.filter(
     (post) => post.frontMatter.draft !== true && post.frontMatter.tags.map((t) => kebabCase(t)).includes(params.tag)
   )
