@@ -1,16 +1,14 @@
 ---
-name: Tails Azimuth
+name: Chengcheng
 avatar: /static/images/about-me.jpg
-occupation: Professor of Atmospheric Science
-company: Stanford University
-email: address@yoursite.com
+occupation: Frontend Engineer
+company:
+email:
 twitter: https://twitter.com/Twitter
 linkedin: https://www.linkedin.com
 github: https://github.com
 ---
 
-Tails Azimuth is a professor of atmospheric sciences at the Stanford AI Lab. His research interests includes complexity modelling of tailwinds, headwinds and crosswinds.
+In 2021, I decided to change my career path from a [Delta](https://www.deltaww.com/en-US/index) production planner to a front-end developer. Thus, I enrolled in the [Lidemy](https://bootcamp.lidemy.com/) program which is a bootcamp for people who would like to be softengineer. The reason I would like to change my career is that I was not passionate about my previous job and I wanted to explore what I really wanted to do. As my favorite YouTube channel [Torres Pit](https://www.youtube.com/channel/UCsnZXdLOGBnezK--CiG7FZQ) said, `"Always exloring"`, I stepped out of my comfort zone. I am glad that I made this decision because I love the culture of software and characters of developers. 
 
-He leads the clean energy group which develops 3D air pollution-climate models, writes differential equation solvers, and manufactures titanium plated air ballons. In his free time he bakes raspberry pi.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate.
+This blog is a place for recording my reading note, learning thoughts and coding skills. I hope that I can help myself to improve my expression capability and also help others to learn something new.

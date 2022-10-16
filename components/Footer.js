@@ -14,16 +14,28 @@ export default function Footer() {
           <SocialIcon kind="linkedin" href={siteMetadata.linkedin} size="6" />
           <SocialIcon kind="twitter" href={siteMetadata.twitter} size="6" />
         </div> */}
-        <div className="mb-2 flex space-x-1 text-sm text-gray-500 dark:text-gray-400">
-          <Link className="text-stone-700 font-semibold hover:underline cursor-pointer" href="/">{siteMetadata.blogName}</Link>
-          <div>{`© ${new Date().getFullYear()}`}</div>
-          — Credit to
-          <Link
-            href="https://github.com/timlrx/tailwind-nextjs-starter-blog"
-            className="text-stone-700 font-semibold hover:underline cursor-pointer"
-          >
-            Tailwind Nextjs Theme
-          </Link>
+        <div className="mb-2 block sm:flex space-x-1 text-sm text-gray-500 dark:text-gray-400">
+          <div className="mb-2 flex justify-center">
+            <div>
+              {`© ${new Date().getFullYear()}`}
+              &nbsp;
+            </div>
+            <Link
+              className="text-stone-700 font-semibold hover:underline cursor-pointer"
+              href="/"
+            >
+              {siteMetadata.blogName}
+            </Link>
+          </div>
+          <div className="mb-2 flex justify-center">
+            Credit to&nbsp;
+            <Link
+              href="https://github.com/timlrx/tailwind-nextjs-starter-blog"
+              className="text-stone-700 font-semibold hover:underline cursor-pointer"
+            >
+              Tailwind Nextjs Theme
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
