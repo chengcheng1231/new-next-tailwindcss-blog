@@ -1,0 +1,267 @@
+---
+title: '[前端筆記] TypeScript 簡介（上）💫'
+date: 2022-6-15
+draft: false
+category: 'coding'
+author: Chengcheng
+imgSrc: '/static/images/typescript-part-one/typescript.png'
+tags: ['TypeScript']
+description: TS 是建立在 JavaScript ( 以下簡稱 JS )上的強型別程式語言 ( 編譯過程不允許型別轉換)，所以最主要的作用就是使用一些語法來定義型別。其特性有以下幾點...
+---
+
+<PostImage
+  source="/static/images/typescript-part-one/typescript.png"
+  description=""
+/>
+
+目錄：
+
+<TOCInline toc={props.toc} exclude="Overview" toHeading={2} />
+
+## 🚀 什麼是 TypeScript ( 以下簡稱 TS )？
+先來看看官網定義的
+
+> TypeScript is JavaScript with syntax for types.
+TypeScript is a strongly typed programming language that builds on JavaScript, giving you better tooling at any scale.
+
+TS 是建立在 JavaScript ( 以下簡稱 JS )上的強型別程式語言 ( 編譯過程不允許型別轉換)，所以最主要的作用就是使用一些語法來定義型別。其特性有以下幾點：
+
+1. TS 是開源的 (open source)
+2. 是 JS 型別的超集 (superset)，可以想像成為一擴充包，在 TS 檔案能自由地開發包含 ES5、 ES6 以及 TS 語法
+
+<PostImage
+  source="/static/images/typescript-part-one/superset.png"
+  description='Photo by <a target="_blank" href="https://www.sneppets.com/angular/typescript-vs-es6-vs-es5/">sneppets</a>'
+/>
+
+3. 需透過 Compiler 將 TS 編譯成瀏覽器看得懂的 JS
+
+4. 為寫 Angular 框架主要的語言
+
+5. 可搭配 React/ Vue/ Express 前後端框架
+
+## 🚀 為什麼要用 TypeScript ？
+1. 即時判斷錯誤：相較於 JS 只能在 runtime 階段判斷型別錯誤，TS 能即時提供編譯階段上定義型別與語法的錯誤 (compile-time errors)， 在運行時比較不容易出現意外的錯誤
+2. 更佳的維護性、可讀性：透過 TS 能直接定義其變數的型別，相對註解以及寫文件能提供更穩定、更嚴謹的開發流程，交給電腦判斷長期來說總是省事，而且在長期需要維護的專案上協作者也能快速了解來龍去脈，在開發上能事半功倍
+- **用一個簡單的例子看一下 TS 會幫你做什麼檢查：**
+
+<PostImage
+  source="/static/images/typescript-part-one/exame.png"
+  description=''
+/>
+
+在上面的例子可以看到同樣是 greeting 的函式，會印出同樣的結果，但是在開發 TS 檔的時候編輯器會提醒你 person 這個參數隱含任何的型別，會需要定義一個型別，另外，若你要編譯成 JS 檔時一樣會被這個提醒擋下，因此我們會需要定義一個型別給 person 才能做編譯，才能讓瀏覽器看懂。
+
+- **當然還有其他情況不適合導入 TS：**
+
+1. 開發人員需額外學習 TS 的寫法，如介面（Interfaces）、泛型（Generics）、類別（Classes）、列舉型別（Enums），若專案很趕的情況就不適合
+2. 若不是長期需要維護的專案，可以考慮用 JS 即可，因為導入 TS 也需要時間成本
+3. 與一些函式庫 library 的結合不是很完美
+4. 需要編譯，CI/CD 部署速度慢
+
+##  🚀怎麼安裝 TypeScript ？
+- **安裝 TS ( 需事前安裝 node.js )**
+1. 可以在原先的專案上安裝 TS： `npm install typescript --save-dev`
+2. 也可以直接結合框架來安裝，如 React：`npx create-react-app my-app — template typescript`
+
+- **如何編譯**
+
+透過指令 npx tsc 即將 TS 編譯成 JS 檔，此利供 html 引入
+
+<PostImage
+  source="/static/images/typescript-part-one/tsc.png"
+  description='Photo by <a target="_blank" href="https://www.youtube.com/watch?v=GinkGJZBHIY&t=7144s">source</a>'
+/>
+
+- **TS 的設定檔 ( tsconfig.json )**
+
+執行 `tsc --init` 即可出現設定檔，其中有很多參數可以設定，如可指定輸出的 js 是哪個版本，也可以輸出哪種 module，設定輸入/出路徑等等，像是：
+
+`"rootDir": "./src"`：指定要編譯的入口路徑
+
+`"outDir": "./dist"` ：指定編譯的出口路徑
+
+`"inlineSourceMap": true`：在 devtool 裡可以直接看到原本你寫 ts 的行數，否則是編譯後 js 的行數，可用在 `console.log` 或是秀出發生 bug 的行數
+
+## 🚀怎麼寫 TypeScript ？
+開一個 `.ts` 檔即可開發，我們先從一些基礎的型別來熟悉
+
+### 🚩基礎型別（Primitive Types）：
+
+- 宣告變數時給予型別，any 為 ts 的特殊型別，表示這個變數接受任何型別
+- 陣列 (Array)：型別加上 `[]` 來定義裡面應該是什麼型別，兩個 `[]` 代表裡面還有一層陣列，另外，也可利用陣列泛型（Array Generic） `Array<elemType>` 來定義
+
+```ts
+// Primitive Types
+let a: string = 'this is a'
+let num: number = 1000
+let boo: boolean = true
+let n: null = null
+let ud: undefined = undefined
+let test: any = 123
+
+// array
+let arr: string[] = ['123', 'hello']
+let arr2: any[] = ['123', true, 123]
+let arr3: string[][] = [['d', 'e']]
+let arr4: Array<string> = ['a', 'b']
+```
+
+- 元組型別 (Tuple) ：可利用 Tuple 來宣告陣列，一個型別對應一個宣告的變數
+- 函式 (Function) ：需要在傳入的參數後面接型別，如以下 add的函式，能知道 X 和 Y 皆為 number，若此函式以 JS 來執行，它就不會知道你傳進來的東西是數字還是字串，若傳進來的是字串，結果也不會如預期要是數字相加
+
+```ts
+// tuple
+let tuple: [number, string, boolean] = [1, 'a', true]
+let tuple2: [string, boolean][] = [['s', true]]
+
+// function
+function add(x:number, y:number) {
+    return x + y;
+}
+console.log(add(1,2)) //3
+```
+
+若函式沒有回傳值，代表回傳的預設值就是 undefined，TS 會幫你預設一個回傳值的型別為 void，不過若你有 return東西，無論是數字還是字串，TS 會幫你定義，當然你也能自行定義來檢查你的回傳值是否為你定義的型別
+
+<PostImage
+  source="/static/images/typescript-part-one/primitive.png"
+  description=''
+/>
+
+接著進入到比較抽象的
+
+### 🚩 Enum、Union、Type、Interface：
+
+- 「列舉」或「枚舉」(Enum)：用在可預期的狀態，像是否在直播，或是 api 拿 response 後 http status，若出現非列舉的這些狀態，能寫一個錯誤判斷，宣告的方式就是在大括號內敘述該 Enum 具有哪些常數
+
+```ts
+// enum 枚舉
+// example: 開直播，成功為 0, 失敗為 -1, 直播中為 1
+
+enum LiveStatus {
+    SUCCESS = 0,
+    FAIL = -1,
+    STREAMING = 1
+}
+const status1 = LiveStatus.STREAMING
+const status2: LiveStatus = LiveStatus.FAIL
+```
+
+- 聯合 (Union) ：可設定有多個型態，如以下 muti可賦值 number 以及 string
+
+```ts
+let muti: number | string;
+muti = 'hi'
+muti = 123
+```
+
+- 型別別名 (Type Alias)：可以使用 type 自行定義一個複合式型別，讓你宣告變數時不用一直重複宣告型別（有時候會看到變數會以 T 大寫開頭作為命名），達到簡化程式碼的目的，你可以 primitive type 型別在 type 裡面，你也可以直接限制賦值的內容，另外你能使用聯集（Unions），表示符合其中一種型別即可，也能使用交集（Intersection），需要同時符合兩種型別
+
+```ts
+type A = number
+type B = boolean | number | 'hello'
+let a1: A
+let b1: B
+a1 = 123
+b1 = false
+b1 = 456
+b1 = 'hello'
+
+// object type
+type TStudent = {
+    name: string
+    number: number
+}
+const obj: TStudent = {
+    name: 'Josh',
+    number: 456
+}
+
+// unions
+type TStudent2 = {
+    name: string
+    gender: number
+    address: string
+}
+
+type TStudentUnions = TStudent | TStudent2
+
+const obj1: TStudentUnions = {
+    name: 'Josh',
+    gender: 2,
+    address: 'hihiroad'
+}
+
+// Intersection
+type TStudentIntersection = TStudent & TStudent2
+
+const obj2: TStudentIntersection = {
+    name: 'Amber',
+    number: 123,
+    gender: 1,
+    address: 'hihiroad'
+}
+```
+
+- 介面 (Interface)：一樣能定義物件規格，能夠擴充設計、組裝出更複雜的功能規格（有時候會看到變數會以 I 大寫開頭作為命名）
+
+```ts
+interface IStudentInterface {
+    name: string
+    number: number
+}
+
+const obj3: IStudentInterface = {
+    name: 'Josh',
+    number: 456,
+}
+
+// 擴充的概念，但 Type Alias 沒辦法這樣寫
+interface IStudentInterface {
+    age: number 
+}
+
+const obj4: IStudentInterface = {
+    name: 'Josh',
+    number: 456,
+    age: 30,
+}
+
+// 繼承的概念
+interface StudentInfoInterface extends IStudentInterface {
+    adress: string
+}
+
+const obj5: StudentInfoInterface = {
+    name: 'Josh',
+    number: 456,
+    age: 30,
+    adress: 'hihiroad',
+}
+```
+
+Interface 寫起來跟 Type 很像，但還是有些使用情境的不同，我想擷取[鐵人賽這篇文章](https://ithelp.ithome.com.tw/articles/10216626)的結論，因為已經寫得很清楚，若實際應用在工作上可以想一下應該用哪個：
+
+> - 遇到不希望被人擴充、單純想代表一種獨立的資料格式的概念時，使用型別的宣告 type
+> - 如果單純是原始型別或者是要表示為列舉型別 (enum)、元組型別(tuple)，一定只能使用 type 進行宣告
+> - 型別複合（使用 union 或 intersection）的過程通常都是使用 type 進行宣告
+> - 遇到功能是可以被重複再利用，該功能可能會被多方程式碼或第三方套件依賴，使用介面的宣告 interface
+> - 物件格式通常建議用 interface，使用起來彈性較大
+> - 混合使用型別與介面是可以的，但就是要記得：程式碼到底想要表達的重點是什麼？
+> - 混用過後不希望再被擴充或代表獨立靜態的型別格式就應該要用型別化名的宣告 type，藉由 union 或 intersection 達成
+> - 混用過後的結果是可以被擴充或多方利用，則應該要定義成介面，藉由 extends 去達成
+
+## 🚀小結：
+這篇簡介了 TS 以及使用方式，當然還有很多沒有講到，像是 Class、Generic Types 等等的，畢竟 TS 的範圍多到可以出成一本書，但總之，若學到能夠應用在工作上的程度我想就夠了，其他還沒介紹到的留給下一篇再來介紹
+
+### 參考資料：
+
+[Unions and Intersection Types](https://www.staging-typescript.org/docs/handbook/unions-and-intersections.html)
+
+[TypeScript 極簡介紹](https://linwei5316.medium.com/typescript-%E6%A5%B5%E7%B0%A1%E4%BB%8B%E7%B4%B9-be98f8f74753)
+
+[TypeScript | 善用 Enum 提高程式的可讀性 — 基本用法 feat. JavaScript](https://medium.com/enjoy-life-enjoy-coding/typescript-%E5%96%84%E7%94%A8-enum-%E6%8F%90%E9%AB%98%E7%A8%8B%E5%BC%8F%E7%9A%84%E5%8F%AF%E8%AE%80%E6%80%A7-%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95-feat-javascript-b20d6bbbfe00)
+
+[【Day 13】TypeScript 資料型別 — 字面值型別（Literal Types) & 型別別名(Type Alias)](https://ithelp.ithome.com.tw/articles/10221958)
+

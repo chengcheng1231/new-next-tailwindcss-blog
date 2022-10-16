@@ -7,7 +7,6 @@ import { getFileBySlug } from '@/lib/mdx'
 
 
 export default function BlogPage({ title, date, content, post}) {
-  console.log('it is type specific');
   const { mdxSource, toc, frontMatter } = post
   return (
     <div>
@@ -29,7 +28,7 @@ export default function BlogPage({ title, date, content, post}) {
 
 export async function getStaticProps(context) {
     const { params } = context;
-    const post = await getFileBySlug(params.slug)
+    const post = await getFileBySlug('post', params.slug)
     return {
       props: {
           post,
