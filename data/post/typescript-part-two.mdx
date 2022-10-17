@@ -1,0 +1,308 @@
+---
+title: '[前端筆記] TypeScript 簡介（下）💫'
+date: 2022-6-23
+draft: false
+category: 'coding'
+author: Chengcheng
+imgSrc: '/static/images/typescript-part-one/typescript.png'
+tags: ['TypeScript']
+description: 接續上一篇【前端筆記】 TypeScript 簡介（上）💫 ，我們再來了解其他常見的 TS 寫法...
+---
+
+<PostImage
+  source="/static/images/typescript-part-one/typescript.png"
+  description=""
+/>
+
+接續上一篇【前端筆記】 [TypeScript 簡介（上）💫](https://chengcheng.tw/blog/coding/typescript-part-one) ，我們再來了解其他常見的 TS 寫法。
+
+目錄：
+
+<TOCInline toc={props.toc} exclude="Overview" toHeading={2} />
+
+## 什麼是可選屬性（Optional Properties）、任意屬性（Indexable Types）、唯讀屬性（Readonly properties）
+### 🚀 可選屬性（Optional Properties）
+
+當我們註記變數的型別後，在某些狀況下我們並不需要某個屬性時就可以利用 `？` 來表示，例如以下例子，我們用型別別名 `type` 來宣告型別並宣告變數，可以看到 `TStudent2` 的 `age` 多了一個 `？` ，因此 `obj2` 沒有 `age` 也不會像 `obj` 出錯
+
+```typescript
+type TStudent = {
+    name: string
+    age: number
+}
+
+const obj: TStudent = {
+    name: 'Josh',
+}
+// Property 'age' is missing in type '{ name: string; }' but required in type 'TStudent'.
+
+type TStudent2 = {
+    name: string
+    age?: number
+}
+
+const obj2: TStudent2 = {
+    name: 'Amber',
+}
+```
+
+### 🚀 任意屬性（Indexable Types）
+
+我們只知道某些屬性的型別，不曉得其他屬性的型別時用 `[x: type]: type` 可確保型別的彈性
+
+```typescript
+type TStudent = {
+    name: string
+    age: number
+    [x: string]: any
+}
+
+const obj: TStudent = {
+    name: 'Josh',
+    age: 30,
+    address: 'hihiroad',
+}
+```
+
+⚠ 使用任意屬性需注意的事情
+
+> 倘若任意屬性為「特定」型別 (非 any 或 unknown)，要注意的是所有宣告的屬性(包括確定和可選屬性)都必須是「特定」型別的子屬性
+
+如以上例子，若你的任意屬性為`any`，那並不會影響其他屬性，但若你將其改成特定型別，如 `string`，則 `age`屬性會有錯，因為`age`的型別為 `number`，不是 `string`的子屬性
+
+```typescript
+type TStudent = {
+    name: string
+    age?: number
+    [x: string]: string
+}
+// Property 'age' of type 'number' is not assignable to 'string' index type 'string'.
+
+const obj: TStudent = {
+    name: 'Josh',
+    age: 30,
+    address: 'hihiroad',
+}
+// Type '{ name: string; number: number; address: string; }' is not assignable to type 'TStudent'.
+// Property 'age' is incompatible with index signature.
+// Type 'number' is not assignable to type 'string'.
+```
+
+可以加上 `number | undefined` 來處理此錯誤
+
+```typescript
+type TStudent = {
+    name: string
+    age?: number
+    [x: string]: string | number | undefined
+}
+
+const obj: TStudent = {
+    name: 'Josh',
+    age: 30,
+    address: 'hihiroad',
+}
+```
+
+### 🚀 唯讀屬性（Readonly properties）
+
+利用此屬性代表你在賦值後，就再也不能改變其值了，用法是在屬性前面加上 `readonly`
+
+```typescript
+type TStudent = {
+    readonly name: string
+    age?: number
+}
+
+const obj: TStudent = {
+    name: 'Josh',
+    age: 30,
+}
+
+obj.name = 'Joseph' // Cannot assign to 'name' because it is a read-only property.
+obj.age = 28
+```
+
+## 什麼是型別推論（Type Inference）與型別註記（Type Annotation）
+### 🚀 型別推論（Type Inference）
+
+是 TS 自你開始開發的時候，會幫你判別變數型別，如以下，若你沒宣告 `student` 型別，TS 會自動幫你判別
+
+<PostImage
+  source="/static/images/typescript-part-two/inference.png"
+  description=''
+/>
+
+### 🚀 型別註記（Type Annotation）
+
+為開發者手動宣告給 TS 看的註記，就是一般的寫法
+
+<PostImage
+  source="/static/images/typescript-part-two/annotation.png"
+  description=''
+/>
+
+之所以你需要宣告型別，其好處在於在讓開發者/協作者可以明確知道變數是哪個型別，才不會讓 TS 或開發時去猜那個屬性是什麼型別而造成程式碼的混亂
+
+<PostImage
+  source="/static/images/typescript-part-two/annotation2.png"
+  description=''
+/>
+
+### 🚀 型別斷言 （Type Assertions）
+
+主要用於 TS 幫你做型別推論後，你不滿足其 TS 對於此型別的限制，因此手動去宣告覆蓋它的推斷。使用時機像是你不確定資料會是哪種型別時，如在串接 api 、串接第三方函式等等的，有兩種寫法：
+
+值 as 型別 （React 專案使用 JSX 語法，只能用此寫法）
+`<型別>`值
+例如以下的例子，`typeof animal.swim` 是會報錯的，因為若是 `Cat`型別，是沒有 `swim` 這個屬性
+
+
+```typescript
+interface Cat {
+    name: string;
+    run(): void;
+}
+
+interface Fish {
+    name: string;
+    swim(): void;
+}
+
+function isFish(animal: Cat | Fish) {
+    if (typeof animal.swim === 'function') { 
+        return true;
+    }
+    return false;
+}
+// Property 'swim' does not exist on type 'Cat | Fish'.
+// Property 'swim' does not exist on type 'Cat'.
+```
+
+因此會需要加上斷言就不會報錯，直接告訴 TS `animal` 在那邊的型別
+
+```typescript
+function isFish(animal: Cat | Fish) {
+    if (typeof (<Fish>animal).swim === 'function') { 
+        return true;
+    }
+    return false;
+}
+```
+
+另一個例子是接 api 後的斷言 （要先裝 axios，`npm i axios`），`data1`就能被斷言成 `Data`的型別
+
+```typescript
+import axios from 'axios';
+
+type Data = {
+    userId: number
+    id: number
+    title: string
+    completed: boolean
+}
+
+async function getData() {
+    const res = await axios.get('https://jsonplaceholder.typicode.com/todos/1')
+    const data1 = await res.data as Data  // 斷言其為 Data type
+    console.log(data1) // { userId: 1, id: 1, title: 'delectus aut autem', completed: false }
+}
+
+getData()
+```
+
+## 怎麼寫類別 （Class）、泛型（Generic）
+### 🚀類別 （Class）
+
+我們可以對於屬性、constructor、方法加上型別
+
+```typescript
+class User {
+    name: string
+    private age: number
+    protected adress: string
+
+    constructor(name: string, age: number, adress: string) {
+        this.name = name;
+        this.age = age;
+        this.adress = adress;
+    }
+
+    sayHi(): string {
+        return `Hi, ${this.name}, your age is ${this.age}`;
+    }
+}
+
+const user1 = new User('david', 20, 'david road')
+console.log(user1) // User { name: 'david', age: 20, adress: 'david road' }
+console.log(user1.sayHi()) // Hi, david, your age is 20
+```
+
+可以注意到我們透過 private/ protected 來加註在屬性上，他們皆有一個特性是**你不能從外部直接訪問 ( 如以下錯誤)**，但差別是 `private` 是只可以在該 Class 來讀取，你無法繼承來使用， `protected` 可以在該 Class 來讀取，也可以透過繼承來使用
+
+```typescript
+console.log(user1.age)
+// Property 'age' is private and only accessible within class 'User'.
+
+console.log(user1.adress)
+// Property 'adress' is protected and only accessible within class 'User' and its subclasses.
+```
+
+利用 extends 來擴展/繼承
+
+```typescript
+class Student extends User {
+    grade: number
+    
+    constructor(name: string, age: number, adress: string, grade: number) {
+       super(name, age, adress)  // 在這裡執行的 super 等同於父類別的 constructor
+        this.grade = grade;
+    }
+ 
+    sayGrade(): string {
+        return `Hi, ${this.name}, your grade is ${this.grade}`;
+    }
+}
+
+const student1 = new Student('JoJo', 21, 'JoJo road', 2)
+console.log(student1) // Student { name: 'JoJo', age: 21, adress: 'JoJo road', grade: 2 }
+console.log(student1.sayGrade()) // Hi, JoJo, your grade is 2
+```
+
+### 🚀泛型（Generic）
+
+主要是指在定義函式、介面或類別的時候，不先宣告型別，而在使用的時候再宣告，如以下利用 `<T>` 來宣告為使用時才會傳入的型別
+
+```typescript
+function printName<T> (name: T) {
+    return `Your name is ${name}`
+}
+
+console.log(printName<string>('Josh'))
+// Your name is Josh
+```
+
+若需要多個型別引數，可利用不同的文字做宣告
+
+```typescript
+function printNameAge<T, U> (name: T, age: U) {
+    return `Your name is ${name} and age is ${age}`
+}
+
+console.log(printNameAge<string, number>('Josh', 30))
+// Your name is Josh and age is 30
+```
+
+## 總結
+
+雖然分為上下兩篇來介紹 TS，但還是有很多沒介紹到，不過這些寫法都是工作上常見的，其他大概都是由這些東西加以延伸，TS 最主要的工作讓我們在開發 JS 的時候就知道哪些是不合理的型別，因此大大減少運行時發生錯誤的機率，不過有一好沒兩好，在開發上你總還是要花額外的時間來定義各種型別，總之，若想繼續往下探究 TS 的朋友可參考以下文章，或者可以直接看官方文件：[Generics](https://www.typescriptlang.org/docs/handbook/2/generics.html)
+
+### 參考資料：
+
+[Day05:【TypeScript 學起來】TS 指定型別的三種方法](https://ithelp.ithome.com.tw/articles/10263795)
+
+[TypeScript 入门自学笔记 — 类型断言（二）](https://www.cnblogs.com/echoyya/p/14558034.html#%E7%B1%BB%E5%9E%8B%E6%96%AD%E8%A8%80)
+
+[TypeScript 筆記：推斷、註記與斷言](https://simonallen.coderbridge.io/2021/08/06/ts-inference-annotations-assertiong/)
+
+[TypeScript 新手指南(泛型)](https://willh.gitbook.io/typescript-tutorial/advanced/generics)
