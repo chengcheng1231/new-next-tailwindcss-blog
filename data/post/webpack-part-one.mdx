@@ -1,0 +1,140 @@
+---
+title: '[前端筆記]如何快速上手 webpack 📦'
+date: 2022-5-22
+draft: false
+category: 'coding'
+imgSrc: '/static/images/webpack-part-one/p1.jpeg'
+description: 由於 HTML、JavaScript 及 CSS 這些基礎寫法對於畫面或是開發上的需求已經不合時宜，加上前端的工具日新月異，瀏覽器的支援跟不上新語法( 語法糖 )和新的框架，因此透過打包自動化去做編譯和整合檔案。
+tags: ['webpack']
+---
+
+<PostImage
+    source="/static/images/webpack-part-one/p1.jpeg"
+    description='Photo by <a target="_blank" href="https://vocus.cc/user/5a41fa42eceaedd6be917df2">Bench Accounting</a> on <a target="_blank" href="https://unsplash.com/s/photos/wrapping?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>'
+/>
+
+此筆記的起源：
+
+- 當初學 React 為求快，常常直接下 npx create-react-app my-app 就開始寫 React 了，根本不曉得這個指令中間發生什麼事情
+- 由於求職網站很常看到 webpack 的技能需求，所以不得不來了解一下 XD
+
+webpack 要了解的深也不是一兩天就可以全部了解的，可以看看有人寫成一本書就知道，不訪先從幾個大問題來著手：
+
+<TOCInline toc={props.toc} exclude="Overview" toHeading={2} />
+
+## Webpack 是什麼？
+
+> Webpack 是一個「模組化的打包工具」(module bundler)
+
+來拆解一下這句話：
+
+- 模組化：在剛學習開發時會把所有的功能和邏輯都寫在同一個檔案，對於小型的 project 來說不會有太大的問題，但在大型的 project 下若變成[Spaghetti code](https://zh.wikipedia.org/zh-tw/%E9%9D%A2%E6%9D%A1%E5%BC%8F%E4%BB%A3%E7%A0%81) ，後續的維護則會非常痛苦，因此當你將各個功能和邏輯拆分成一個個不同的檔案（模組），再用引入 （import/require）檔案來方便管理以及維護。
+- 打包：這階段 webpack 做了兩件事，1. 將不同的檔案（模組）和資源做編譯並且做整合，打包成幾個 bundle 的檔案，2. 將新語法做轉換，讓瀏覽器看得懂。
+
+<PostImage
+    source="/static/images/webpack-part-one/p2.png"
+    description='Photo by <a target="_blank" href="https://webpack.js.org/">webpack.js.org</a>'
+/>
+
+## 為什麼要用 Webpack？
+
+- 由於 HTML、JavaScript 及 CSS 這些基礎寫法對於畫面或是開發上的需求已經不合時宜，加上前端的工具日新月異，瀏覽器的支援跟不上新語法( 語法糖 )和新的框架，因此透過打包自動化去做編譯和整合檔案，讓瀏覽器能看懂、順利執行。例如將圖片做壓縮、程式碼做壓縮、做 SASS 預處理工具的工作或是轉換 ES6 語法。像是若我們使用 ES6 的箭頭函式，webpack 可以在打包的過程幫你轉變成一般 function 的寫法。
+- 再來，當你 JavaScript 新語法要做轉換，CSS 預處理要做轉換，其他等等的資源要做轉換時，你不能在部署前一個個去借助工具做轉換，太沒效率，因此我們利用 webpack 的設定，讓這些需要被轉換的檔案能一同被處理。
+- 若你自己開發了好用的工具包，像是 JQuery library 的函式包、或是串了某某平台的 api 的 code，你也能透過打包好給別人引入做使用
+
+
+## Webpack 怎麼用？
+
+太多理論容易沖昏頭，那來一步步的感受一下 webpack 怎麼做事的
+
+1. 創一個資料夾，在 terminal 打上 `npm init -y` 建立一個 npm 的專案，資料夾會有 `package.json` 你整個專案的設定檔 ( 非 webpack 的 )
+2. terminal 打上 `npm install webpack webpack-cli --save-dev` 安裝 webpack，透過 `npx webpack --version`確認是否有版本號
+3. terminal 打上 `mkdir src` 開一個資料夾 src ，約定俗成的會把 source code 寫在 src ，而不會直接寫在根目錄底下，然後新增 index.js 以及 utils.js 檔案，打開 VS code 並分別加上以下 code，這邊就是你專案想打包的東西
+
+```js:utils.js
+export function first(str) {
+    return str[0]
+}
+```
+```js:index.js
+const utils = require('./utils')
+console.log(utils.first('abc'))
+```
+
+4. 開一 index.html 檔案，並加入以下 code，注意此時我們的 script 是引入 src/index.js，因為等會打包後就是要引入打包完的檔案
+
+```html:index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="src/index.js" ></script>
+</head>
+<body>
+    
+</body>
+</html>
+```
+
+<PostImage
+    source="/static/images/webpack-part-one/p3.png"
+    description='現在會長這樣'
+/>
+
+5. 這時你將此 html 在瀏覽器打開，在 devtool 會發現下面圖片錯誤，因為瀏覽器的執行環境並沒有「模組化」的概念，因此瀏覽器看不懂 require/import ，會發生錯誤
+
+<PostImage
+    source="/static/images/webpack-part-one/p4.png"
+    description=''
+/>
+
+> 不過近幾年瀏覽器有原生支援了一個規範叫做 ES module，但是要搭配開一個 server 、引入用 import，index.html 檔案要在 script 屬性加上type="module"才可以，這個就不細談，總之， webpack 也是在幫我們處理這樣問題的工具，讓瀏覽器去吃打包後的檔案。
+
+6. terminal 打上 npx webpack 去打包，它會把 src 底下的 index.js 當作程式的入口點，把打包後的東西放到 dist 資料夾的 main.js，這就是打包後的東西，裡面的 code 看不懂也沒關係，瀏覽器看懂就好
+
+<PostImage
+    source="/static/images/webpack-part-one/p5.png"
+    description=''
+/>
+
+7. 將 index.html 檔案的 script 換成引入dist/main.js，在瀏覽器更新檔案就發現是我們要的結果， 所以我們的 require 語法就能在瀏覽器執行了！
+
+```html:index.html
+<script src="dist/main.js" ></script>
+```
+
+<PostImage
+    source="/static/images/webpack-part-one/p6.png"
+    description=''
+/>
+
+目前算是成功的使用 webpack，但是若今天 js 檔案的入口點是叫 src/app.js，不過 webpack 預設會抓 src/index.js 來打包，這時就會出錯，因此我們需要設置 webpack 的設定檔
+
+### webpack.config.js
+創一 webpack.config.js 檔案 (不能亂取)，加入以下 code，我們能將 src/index.js 改成 src/app.js，就可成功執行 webpack，但當你的檔案就是 index.js 就不用做這一步，當然，還有其他的設定，如 mode、output 等等的
+
+```js:webpack.config.js
+const path = require('path');
+
+module.exports = {
+    mode: 'production', // production 是預設，'development' 則不會幫忙做壓縮，比較看得懂
+    entry: './src/index.js', //程式的入口點
+    output: {
+        filename: 'main.js', //輸出成此檔案
+        path: path.resolve(__dirname, 'dist'), //檔案名稱
+    },
+};
+```
+
+### 完成 🙌：
+此外，你可以在 package.json 檔案的 scripts 加上 "build": "npx webpack" ，你就能在 terminal 打上npm run build 來快速執行 webpack，下篇再來處理其他資源的轉換，如加入 babel 將 ES6 語法轉成 ES5，用 scss-loader 轉換 成 CSS。
+
+### 參考資料：
+- [Lidemy](https://lidemy.com/)
+- [尋覓 webpack — 04 — 認識 webpack — 介紹 webpack](https://ithelp.ithome.com.tw/articles/10239696)
+- [Common cross browser problems](https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Cross_browser_testing/HTML_and_CSS#common_cross_browser_problems)
+- [[筆記][React]從零到一的webpack開發環境(1)-安裝執行篇](https://ithelp.ithome.com.tw/articles/10200329)
+
