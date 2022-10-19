@@ -1,0 +1,191 @@
+---
+title: '[前端筆記]處理陣列的方法'
+date: 2022-4-18
+draft: false
+category: 'coding'
+imgSrc: '/static/images/array-method/p1.png'
+description: 處理陣列有很多方法，但常常要用到時總是不曉得用哪個最恰當，因此打算來熟悉並記錄一下整個過程。
+tags: ['array']
+---
+
+<TOCInline toc={props.toc} exclude="Overview" toHeading={2} />
+
+處理陣列有很多方法，但常常要用到時總是不曉得用哪個最恰當，因此打算來熟悉並記錄一下整個過程，這篇主要是參考[《JavaScript 陣列處理方法 [filter(), find(), forEach(), map(), every(), some(), reduce()]》](https://www.casper.tw/javascript/2017/06/29/es6-native-array/)的架構來整理並比較各方法的使用時機和差異，在之後要用到的時候還能回來看看我到底要用哪個最快最合適
+
+以下是各方法之間差異的比較表：
+
+<PostImage
+    source="/static/images/array-method/p1.png"
+    description='created by miro'
+/>
+
+<PostImage
+    source="/static/images/array-method/p2.png"
+    description='created by miro'
+/>
+
+首先我們先要有一陣列作為要操作的對象：
+```js
+let peopleList = [
+  { name: 'Bill Gates', like: 'microsoft', age: 65 },
+  { name: 'Steve Chen', like: 'Youtube', age: 43 },
+  { name: 'Elon Musk', like: 'Twitter', age: 50 },
+  { name: 'Mark Zuckerberg', like: 'Metaverse', age: 37 }
+]
+```
+在以下這些你想要做的事情中，可以對應到 `filter(), find(), forEach(), map(), every(), some(), reduce()`
+
+1. 搜尋並拿到所有年紀大於 45 歲以上的資料物件
+2. 想拿到第一個搜尋到年紀大於 45 歲以上的資料物件
+3. 想在原物件各個資料的like key 的 value 字串加入 'He likes'
+4. 想拿到新的陣列是各資料物件年齡加上 5 歲
+5. 是否全部年紀皆大於 40 歲以上
+6. 是否有任一年紀大於 60 歲以上的資料物件
+7. 他們全部資料物件的年紀加總為何？他們年紀最大的資料物件為何？
+
+## filter()
+> ### 使用時機：搜尋符合條件的資料物件
+> ### 想達成的目標：搜尋並拿到所有年紀大於 45 歲以上的資料物件
+
+以下參數 item、index、 array 分別代表當次迴圈拿到的物件、 索引、全部陣列
+```js
+var filterAgeThan45 = peopleList.filter(function (item, index, array) {
+  return item.age > 45; // 取得年紀大於四十五歲的
+});
+
+console.log(filterAgeThan45);
+// [{ name: 'Bill Gates', like: 'microsoft', age: 65 },{ name: 'Elon Musk', like: 'Twitter', age: 50 }]
+```
+
+return 的條件為當 item.age 大於 45 這件事情，若為 true 則回傳該資料物件，若沒符合條件則不會回傳東西，都沒有大於 45 的物件則 `filterAgeThan45` 的結果為 `[]`
+
+## find()
+> ### 使用時機：搜尋符合條件的第一筆資料
+> ### 想達成的目標：當我想拿到**第一個**搜尋到年紀大於 45 歲以上的資料物件
+
+```js
+var findAgeThan45 = peopleList.find(function (item, index, array) {
+  return item.age > 45; // 取得年紀大於四十五歲的
+});
+
+console.log(findAgeThan45);
+// [{name: "Bill Gates", like: "microsoft", age: 65}]
+```
+return 的條件為當 item.age 大於 45 這件事情，若為 true 則回傳該資料物件並結束迴圈，若沒符合條件則不會回傳東西，都沒有大於 45 的物件則 `findAgeThan45` 的結果為 `undefined`
+
+## forEach()
+> ### 使用時機：想對原陣列內容做改變，如同 for 的寫法
+> ### 想達成的目標：想在各個物件裡 `like` key 的 value 字串加入 'He likes'
+
+```js
+peopleList.forEach(function (item, index, array) {
+  item.like = "He likes " + item.like;
+});
+
+console.log(peopleList);
+//[
+//  { name: 'Bill Gates', like: 'He likes microsoft', age: 65 },
+//  { name: 'Steve Chen', like: 'He likes Youtube', age: 43 },
+//  { name: 'Elon Musk', like: 'He likes Twitter', age: 50 },
+//  { name: 'Mark Zuckerberg', like: 'He likes Metaverse', age: 37 }
+//]
+```
+
+不須在函式內做 return，因為我想改的是原陣列
+
+## map()
+> ### 使用時機：拿到一個加工後的新陣列，並且不改變原陣列的資料
+> ### 想達成的目標：想拿到新的陣列是各資料物件年齡加上 5 歲
+
+```js
+var mapAgeAdd5 = peopleList.map(function (item, index, array) {
+  return item.age + 5;
+});
+
+console.log(mapAgeAdd5)
+// [70, 48, 55, 42]
+
+console.log(peopleList)
+// [
+//   { name: 'Bill Gates', like: 'microsoft', age: 65 },
+//   { name: 'Steve Chen', like: 'Youtube', age: 43 },
+//   { name: 'Elon Musk', like: 'Twitter', age: 50 },
+//   { name: 'Mark Zuckerberg', like: 'Metaverse', age: 37 }
+// ]
+```
+
+## every()
+> ### 使用時機：檢查所有條件是否符合某個條件，是否全部…皆…
+> ### 想達成的目標：是否全部年紀皆大於 40 歲以上
+
+```js
+var everyAge45 = peopleList.every(function (item, index, array) {
+  return item.age > 40; 
+});
+
+console.log(everyAge45) 
+// false，因為 Mark Zuckerberg 為 37
+// 當全部 age 大於 40 才會回傳 true
+```
+
+只會回傳 true or false
+
+## some()
+> ### 使用時機：檢查任一資料是否有符合某個條件，是否有其中一個資料符合…
+> ### 想達成的目標：是否有任一年紀大於 60 歲以上的資料物件
+
+```js
+var someAge60 = peopleList.some(function (item, index, array) {
+  return item.age > 60; // 只要部分 age 大於 10 就回傳 true
+});
+
+console.log(someAge60); 
+// true，因為 Bill Gates 為 65
+// 當只要有 age 大於 60 就回傳 true
+```
+
+只會回傳 true or false
+
+## reduce()
+> ### 使用時機：適合進行陣列內有互動性的操作，ex 陣列累加 / 比大小
+> ### 想達成的目標：他們全部資料物件的年紀加總為何？他們年紀最大的資料物件為何？
+
+accumulator, currentValue, index, 分別為前一個回傳值, 目前值, 當前索引值，在 reduce 的第二個參數傳入初始化的值
+
+```js
+var reducePlusAllAge = peopleList.reduce(function (
+  accumulator,
+  currentValue,
+  index,
+  array
+) {
+  return accumulator + currentValue.age; // 回傳目前的值與前一個值相加
+}, 0); // 傳入初始化值為 0
+
+console.log(reducePlusAllAge); // 195
+
+var reduceMaxAge = peopleList.reduce(function (
+  accumulator,
+  value,
+  currentIndex,
+  array
+) {
+  return Math.max(accumulator, value.age); // 與前一個值比較大小，回傳比較大的值
+}, 0); // 傳入初始化值為 0
+
+console.log(reduceMaxAge); // 65
+```
+### 附註：以下為判斷變數型別的布林值為 true or false
+
+<PostImage
+    source="/static/images/array-method/p3.png"
+    description='<a target="_blank" href="https://262.ecma-international.org/5.1/#sec-9.2">ECMA</a>'
+/>
+
+### 參考資料：
+
+[js-array-operations](https://github.com/tooto1985/js-array-operations)
+
+[JavaScript 陣列處理方法 [filter(), find(), forEach(), map(), every(), some(), reduce()]](https://www.casper.tw/javascript/2017/06/29/es6-native-array/)
+
+[認識 JavaScript Reduce](https://medium.com/unalai/%E8%AA%8D%E8%AD%98-javascript-reduce-940806267bfb)
