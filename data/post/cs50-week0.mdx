@@ -1,0 +1,218 @@
+---
+title: '[CS50 學習筆記] 課程簡介＋week0'
+date: 2022-11-01
+draft: false
+category: 'coding'
+author: Chengcheng
+imgSrc: '/static/images/cs50-week0/p1.png'
+tags: ['cs50']
+description: 了解電腦基本運作、Algorithms （演算法）、Pseudocode（虛擬碼）
+---
+
+<PostImage
+    source="/static/images/cs50-week0/p1.png"
+    description='<a target="_blank" href="https://www.freecodecamp.org/news/harvard-cs50-guide/">freecodecamp</a>'
+/>
+
+索引：
+
+<TOCInline toc={props.toc} exclude="Overview" toHeading={2} />
+
+> 前言：雖然轉職成軟體工程師一陣子了，但冒牌者症候群仍隱隱發作，總覺得一些最基本的觀念都沒搞懂稱不上什麼合格的軟體工程師，加上我認為資深工程師一定會需要知道這個課程包含的知識，因此決定來修 CS50，好好補足一些基礎，此筆記依循著課程筆記的脈絡來重新寫下我自己的詮釋，所以如有雷同是很正常的事情。
+
+## 課程介紹
+CS50 是哈佛大學的電腦通識課，每年提供給校內的學生以外也免費提供給全世界想學習電腦科學的人，只要透過 [edx](https://learning.edx.org/course/course-v1:HarvardX+CS50+X/home) 註冊一下就能開始線上學習，課程最主要的目的是教會學生如何透過電腦科學的思維來有效率的解決問題，從課綱來看，課程囊括了 abstraction, algorithms, data structures, encapsulation, resource management, security, software engineering 以及 web programming 這些我現在也搞不太懂的底層電腦知識，使用的語言則包含 C, Python, SQL 加上 HTML, CSS, 和 JavaScript，課程約十一週左右，每週都有作業（可以只上課不寫作業），若能完成 70 % 的作業，最後就能獲得證書（只有證書會需要花錢），在 edx 上課它的影片會有逐字稿，你也能找到投影片和課程筆記，對想英文不好的人相當友善，當然，因為是線上課程你也可以花半年慢慢把這些課上完，沒有時間限制，無論是[軟體工程師](https://blog.techbridge.cc/2017/11/11/cs50/)還是做網路相關產業的[工作者](https://medium.com/@shaoyunchang/%E4%B8%8A%E4%B8%80%E5%A0%82%E6%9C%89%E8%B6%A3%E7%9A%84%E9%9B%BB%E8%85%A6%E8%AA%B2-%E5%93%88%E4%BD%9B%E5%A4%A7%E5%AD%B8%E7%9A%84%E5%85%8D%E8%B2%BB%E7%B7%9A%E4%B8%8A%E8%AA%B2%E7%A8%8B-computer-science-cs50-863685dd2665)都很推崇的一堂課，在課程中若遇到問題也能透過 [communities](https://cs50.harvard.edu/x/2022/communities/) 去發問，因此不用擔心卡關很久不知道怎麼解決的困境，總之，是一堂適合沒有程式開發經驗但想加強網路相關基礎觀念的人來上的課。
+
+## 課程的心態建立
+一開始講師 [David](https://cs.harvard.edu/malan/) 提到這堂課最重要的事情並不是在課程結束時你和你同學的差距有多少，而是和一開始的你差距有多少。而且沒有人一開始就能熟悉電腦科學這門語言，事實上就連 David 一開始學習時作業因為沒有遵照指示而被扣了分，所以程式碼雖然看起來很神秘，不過 there no magic in classroom，只要一步步來了解，到最後你也能開始自學，甚至改變你的思考模式，進而解決生活上的問題。
+
+<PostImage
+    source="/static/images/cs50-week0/p2.png"
+    description=''
+/>
+
+## 電腦科學是什麼
+就課程的解釋，最主要就是解決問題，今天你有一個 input 以及你想要的 output ，透過電腦科學（表示成下圖中間的 black box）來完成整個過程，就我的解釋來說，電腦科學不只是關乎程式、也包含了方法以及各種理論的集合體，舉例最貼近生活的例子 google map 來說，在以前我們必須拿實體的地圖（以後的小朋友甚至不會看過實體的地圖了），先找出我們從在的位置、方位，目的地的相對位置，你需要怎麼走，沿著哪條街左轉，要經過幾個街區等等，但現在你是用 google map ，也就是電腦科學下的產物，你只要輸入你的（ input ），也就是你所在的地點，目的地，它就會告訴你怎麼走，是不是需要搭車，時間多久，各種路線組合呈現給你（ output ），你也只要 follow 就好，你根本就不用記路名，路標之類的，只要遵從螢幕上的指示就能到達你想去的地方，再舉一個例子，為什麼很多網美的照片、影片跟本人差這麼多，我們知道那是修圖、濾鏡，讓你不用化妝也能上鏡頭，其實修圖、濾鏡也關乎電腦科學，它會要知道如何判斷人臉（ input ）並將臉上的暗沈、皺紋、痘疤清除，給你一張完美的臉（ output ），因此電腦科學存在的目的說好聽一點就是解決了人類很多痛點，生活更方便，難聽一點是人類的懶是沒有極限的。
+
+<PostImage
+    source="/static/images/cs50-week0/p3.png"
+    description=''
+/>
+
+## 電腦是如何呈現資料的
+我們人為了算數，可能會用手指頭來數，一就伸出一根手指頭，二就兩根， 這樣的方式稱之為 unary （一進位制），意思是每個手指只代表單一個值，像是我們在進行遊戲在計算分數時會用「正」字來算，每一撇都是等量的，但數量若屬超過十呢，手指不夠用了，我們開始使用 decimal （十進位）的方式，利用 0–9 的組合來算，但是電腦是如何儲存數字的呢？
+
+- binary （二進位制）
+
+課程中講師拿起地板上的燈泡來隱喻電腦如何計算數字，燈泡有亮跟不亮兩種，亮代表 1，不亮代表 0。
+
+1 如何表示成二進位制，也就是拿一個亮的燈泡代表 1，2 如何表示成二進位制，因為沒有 2 這個字可以用，所以進位將 1 往下一個位置推，0 補上原來的位置，也就是拿一個亮的燈泡以及一個不亮的燈泡表示，3、4 、5 一樣就是一串 0 和 1 的組合。
+
+<PostImage
+    source="/static/images/cs50-week0/p4.png"
+    description=''
+/>
+
+燈泡和電腦都是透過電來運作的機器，但我們不會將燈泡塞到電腦裡面去計算數字，而是現代電腦裡面好幾百萬個的 transistors（電晶體），也是相同的概念，它能被開關，一樣可以表示 0 和 1，所以電腦上能存圖片、影片、word 、ppt 檔等等所有的東西，其實就只用 0 和 1 數字來代表，例如圖片每個 pixel 的顏色應該是什麼顏色，其實背後只是一串 0 和 1，只是電腦幫你把 0 和 1 轉換成人類能識別的顏色。
+
+
+> 補充：這些 0 和 1 以會被稱作 binary digit ， 縮寫是 bit （位元），8 個 bits 會成為一個 byte，它的排列組合包含 0 的話會有 256 種組合 （2 的八次方）。所以買手機跟電腦時我們都會注意到他們的容量，通常是以 GB 為單位，但其實它就是好幾個 bytes 所組成的。
+```plaintext
+轉換值參考：
+1KB = 1,024 bytes
+1MB = 1,024 KB = 1,048,576 bytes
+1GB = 1,024 MB = 1,048,576 KB = 1,073,741,824 bytes
+```
+- 如何表示文字呢
+
+在 1960 年代，有一群人制定了一套數字轉換成文字的表格，稱之為 ASCII （ American Standard Code for Information Interchange，美國標準資訊交換碼）的編碼系統，電腦就知道如何將什麼數字轉換成文字了，在表中可以看到大寫 A-Z 、小寫 a-z 以及一些常用符號，以大寫 A 來說，從上面那排是 100 左邊那列 0001 ，組合起來就是 1000001，若前面補個 0 成為一個 byte 會是 01000001，轉換成十進位就會是 65。所以若我們收到十進位的 72, 73, 和33，二進位的01001000, 01001001和00100001，這些數字轉換成文字就會是 HI!。
+
+<PostImage
+    source="/static/images/cs50-week0/p5.png"
+    description='ASCII 轉換表，圖片來源：<a target="_blank" href="https://zh.wikipedia.org/wiki/ASCII">維基百科</a>'
+/>
+
+但世界上不是只有英文，還有中文、日語、韓文等等，還有一些其他符號該怎麼表示呢，到了 1980 年末，有一群人制定了稱作 Unicode 的編碼系統，他有自己的 code point，也能透過 code point 轉換成十六進位、十進位、二進位，使用了比 ASCII 更多的位元去容納這些文字、符號。像是以下 “face with medical mask” 的 emoji，它的 Unicode code point 是U+1F637 ，二進位是 11110000 10011111 10011000 10110111 ，可以參考這個[轉換工具](https://unicode-table.com/en/1F637/)，不過在不同的裝置上雖然他們接收到的位元數字是一樣的，但會依據不同的產品而呈現不同的圖示（如下）。
+
+<PostImage
+    source="/static/images/cs50-week0/p6.png"
+    description='<a target="_blank" href="https://unicode-table.com/en/1F637/">source</a>'
+/>
+
+> 補充：更多的故事可以參考[《為什麼打開檔案時會看到亂碼？跟著小明一起從傳紙條學習編碼》](https://hulitw.medium.com/what-is-encoding-ascii-unicode-utf8-5fe55a98bee0)
+
+- 如何表示圖像、影片、聲音呢
+
+透個位元我們也能將其轉成顏色，有一個最常用的轉換系統稱作為 [RGB](https://www.w3schools.com/colors/colors_rgb.asp) ，我們能透過三組數字來代表紅色、綠色、藍色要多少來調配出我們想要的顏色，每組數字會是 8 bits，就會有 256 種組合 (0–255），這樣，像是 `0 0 0` 就是黑色，`255 255 0` 就是黃色，十六進位的數字會是 `#ffff00` 。
+
+在每個螢幕上其實是由上千或上百萬的 pixels 組成，那每個 pixels 要顯示什麼顏色就是透過 RGB 那三組數字來決定的，至於影片，也就是加上時間這個維度，讓很多張圖像在時間內閃過你的眼睛，就像是早期的電影就是透過影格一格一格播放讓你感覺人物真的有在動，若不知道我在說什麼看 [FLIPBOOK](https://www.youtube.com/watch?v=sz78_07Xg-U&ab_channel=CS50) 這個影片就懂了。
+
+聲音也是一樣透過位元組來記錄音符、持續時間以及大小聲等等，像是 MIDI 就是一項通訊協定，讓收到位元組的播放器都能播放相同的音樂，但若播放器的品質不好，音色也會有差別，這和前面提到不同廠牌呈現的 emoji 會略有不同一樣。
+
+<PostImage
+    source="/static/images/cs50-week0/p7.gif"
+    description='<a target="_blank" href="https://vincent-technology.blogspot.com/2019/07/midi-note-control-change.html">source</a>'
+/>
+
+所以透過一個例子來小結一下，當一位女同學想透過手機傳送訊息 😂 來敷衍男同學時， 女同學知道他輸入的是 😂 ，但女同學的手機實際上是存 11110000 10011111 10011000 10000010 ，傳給男同學的手機也是 11110000 10011111 10011000 10000010 ，接著再將它轉換成我們看得懂的 😂
+
+## 演算法（Algorithms）
+雖然我們知道了電腦是如何用數字來表示文字、圖像、聲音，但電腦科學的功能不單單只是將它們轉換來轉換去而已，前面提到主要的目的是解決問題，因此會透過 step-by-step 的指示來解決問題，會將其稱之為`演算法`，而我們會透過程式語言來實踐演算法。例如我們想要在一個`沒有索引`並且`名字照 a-z 順序`排好的電話簿裡面找 David 這個人，我們假設這個人名一定在電話簿裡，如果我們一頁一頁翻，終究會找到，但就是比較花時間，今天我們二頁二頁翻，雖然比較不花時間，可以我們會有可能錯過人名，因此第三種方式是直接翻開電話簿的中間，看那一頁是否有 David，如果沒有我們比較 David 和那一頁的字母，若 David 在該字母前面，那我們捨棄後半的字母，在該字母後面則捨棄前半的字母，以這樣的方式直到找到 David 為止。
+
+將三種方法畫成時間和問題規模的座標會像以下，紅線是第一種方法，最大的搜尋時間會隨著規模線性成長，因此若有 1000 頁，一頁找 10 秒，最壞的情況就是每頁都翻，要花 10000 秒，黃線是第二種方法，最大的搜尋時間為 n/2，也是線性成長，但不是好的解，綠線是第三種方法，以 2 為底的 log n ，每次搜尋都是將搜尋的數量砍半，既能找到人名也節省很多時間，所以演算法是有好壞的。
+
+<PostImage
+    source="/static/images/cs50-week0/p8.png"
+    description='from cs50'
+/>
+
+## Pseudocode（虛擬碼）
+我們可以將上述第三種的方法寫成以下的形式，我們會稱之為 Pseudocode，也就是一個個步驟透過語言的方式描寫下來，執行上是有前後順序的，我認為 Pseudocode 已經夠白話就不用再解釋，但要注意的是我們翻開電話簿後有三種情況，分別描述在第 4、6、9 行，還需要考慮一點的事若你要找的那個人若最後都不在電話簿上，那要利用 12 行來讓整個程序做個結束，否則你的電腦會一直運作這個程式而不回應任何東西。
+
+```
+1  Pick up phone book
+2  Open to middle of phone book
+3  Look at page
+4  If person is on page
+5      Call person
+6  Else if person is earlier in book
+7      Open to middle of left half of book
+8      Go back to line 3
+9  Else if person is later in book
+10     Open to middle of right half of book
+11     Go back to line 3
+12 Else
+13     Quit
+```
+
+接著我們從 Pseudocode 說明在程式中常用的幾個名詞
+
+- functions （函式）（以下星號）：
+
+這些以動詞或是動作為開頭的步驟稱為函式，我們會說去呼叫函式，代表它會去處理一個更小的問題，所以大目標是在電話簿找到那個人，子目標當然包含打開電話簿、看電話簿、打給那個人，翻閱電話簿等等更細微的動作
+
+```plaintext
+1  **Pick up** phone book
+2  **Open to** middle of phone book
+3  **Look at** page
+4  If person is on page
+5      **Call** person
+6  Else if person is earlier in book
+7      **Open to** middle of left half of book
+8      Go back to line 3
+9  Else if person is later in book
+10     **Open to** middle of right half of book
+11     Go back to line 3
+12 Else
+13     **Quit**
+```
+
+- Conditionals（條件判斷）（以下星號）：
+
+在不同狀況下會有不同的反應，像是玩 RPG 一樣，你選擇不同對話就會有不同的結果，所以說這些條件都是事先設定好的
+
+```plaintext
+1  Pick up phone book
+2  Open to middle of phone book
+3  Look at page
+4  **If** person is on page
+5      Call person
+6  **Else if** person is earlier in book
+7      Open to middle of left half of book
+8      Go back to line 3
+9  **Else if** person is later in book
+10     Open to middle of right half of book
+11     Go back to line 3
+12 **Else**
+13     Quit
+```
+- Boolean expressions （布林表達式）：
+
+如何在 Conditionals（條件判斷）中決定劇情往哪走就是要依靠 Boolean expressions，在這個條件下是 “True” 還是 “False”
+
+```plaintext
+1  Pick up phone book
+2  Open to middle of phone book
+3  Look at page
+4  If **person is on page**
+5      Call person
+6  Else if **person is earlier in book**
+7      Open to middle of left half of book
+8      Go back to line 3
+9  Else if **person is later in book**
+10     Open to middle of right half of book
+11     Go back to line 3
+12 Else
+13     Quit
+```
+- loops （迴圈）：
+
+我們能藉由迴圈去表示我們要重複執行某些步驟以避免太多不必要的程式
+
+```plaintext
+1  Pick up phone book
+2  Open to middle of phone book
+3  Look at page
+4  If person is on page
+5      Call person
+6  Else if person is earlier in book
+7      Open to middle of left half of book
+8      **Go back to line 3**
+9  Else if person is later in book
+10     Open to middle of right half of book
+11     **Go back to line 3**
+12 Else
+13     Quit
+```
+以上的名詞基本上是每個程式語言都會出現的，如 C、Python、JavaScript，當然還有很多名詞沒提到，不過這些都是最最最基本的。
+
+## Scratch
+最後課程介紹到 Scratch ，它是麻省理工媒體實驗室為程式初學者設計的平台，他能透過視覺畫的方式讓學習者熟悉程式的運作，如以下左側的一些工具，就能實現像剛剛提到的 functions、Conditionals、Boolean expressions、loops ，右上方則是運作，中間則是將工具組合成你要的效果，這個效果你也可以想像是我們剛提到的演算法，右上則是呈現的畫面，會跑出你想要的效果，右下則是一些輔佐插入圖片、顯示數據的介面。總之，這是對一個想學程式的人很好上手的平台，你可以先玩這個再學程式，就不用先直接面對一些看不懂的程式碼，也能對剛剛提到的名詞有初步的認識，推薦任何想學習程式的人。
+
+<PostImage
+    source="/static/images/cs50-week0/p9.png"
+    description='ease-educators.com'
+/>
+
+## 小結：
+在寫 week0 的課程筆記後我也繳交了第一次作業，就是用 Scratch 做一個動畫，但有些規則是要遵守的，可以參考[他們的規定](https://cs50.harvard.edu/x/2022/psets/0/scratch/)，沒意外的話還會有week1 的筆記，那就下次見啦～
