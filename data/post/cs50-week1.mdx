@@ -1,0 +1,573 @@
+---
+title: '[CS50 學習筆記] week1 — C 語言'
+date: 2022-12-06
+draft: false
+category: 'coding'
+author: Chengcheng
+imgSrc: '/static/images/cs50-week0/p5p1.png'
+tags: ['cs50']
+description: 了解電腦基本運作、Algorithms （演算法）、Pseudocode（虛擬碼）
+---
+
+<PostImage
+    source="/static/images/cs50-week1/p1.png"
+    description='<a target="_blank" href="https://www.freecodecamp.org/news/harvard-cs50-guide/">freecodecamp</a>'
+/>
+
+索引：
+
+<TOCInline toc={props.toc} exclude="Overview" toHeading={2} />
+## C 語言
+若有使用過 Scratch 這個為程式初學者設計的平台，那可以大概懂程式就是像是拼圖一樣，一步步地把各個事件拼湊起來，最終去達到想要的效果，到了 C 語言，或是無論哪種程式語言，都可以達到 Scratch 所列的這些功能，如宣告函示，做迴圈等等，只是寫程式這件事情並不是非那麼友善，因為它並非像是 Scratch 能圖像化那些步驟，而是以文字（text）的方式來做到。
+
+但首先要注意的是我們的目的並非學到一個特定的語言，例如 C 語言，而是學會如何「寫程式」這件事，因為若要學另一個新的語言，其概念會是雷同的，因此，C 語言就只是一個工具而已，就像是你用日文跟日本人交流，日文只是工具，交流才是目的。
+
+在寫任何程式時我們會注重三件事情：
+
+- **正確性（correctness）**：是否我們的程式能正確地解決我們的問題。Ex：我跟你談大海，你卻回我浴缸？
+- **設計（design）**：是否可讀性是高的、是否夠有效率，Ex：重複使用到的變數、函式是否能提取出來，讓程式碼更簡潔。
+- **風格（style）**： 在視覺覺得編排上是否夠好，Ex：要用 space 還是 tab 縮排， `{`是否應該換行之類的。
+
+<PostImage
+    source="/static/images/cs50-week1/p2.png"
+    description='<a target="_blank" href="https://javascript.info/coding-style">code style</a>'
+/>
+
+以下就是用 C 語言來印出 `“hello, world”`的程式碼，之後會解釋每一行在做什麼。
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    printf("hello, world\n");
+}
+```
+
+在了解如何跑程式碼之前要先知道 Command line 是什麼。
+
+## Command line
+中文稱作命令行或命令行介面，主要的作用是你能透過純文字來操作電腦，因此相較於 Graphical User Interface （GUI），我們能透過滑鼠來新建資料夾、在資料夾裡按上一頁或下一頁來切換位置、創一個檔案以及列出檔案清單等等這些動作對電腦來說都是執行一串字元而已，所以我們一樣能透過純文字去能達到一樣的效果，而寫這些 Command line 的地方通常被稱作為 terminal（終端機），常見指令如下。
+
+- `cd` ：改變現在資料夾的位置
+- `cp` 複製檔案或資料夾
+- `ls` ：列出所有資料夾內的檔案
+- `mkdir`：新增資料夾
+- `mv` ：移動/重新命名檔案或是資料夾
+- `rm` ： 刪除檔案
+- `rmdir` ：刪除資料夾
+
+所以我說程式碼要放在哪裡執行呢？
+
+## IDEs, compilers, interfaces
+IDE，全名 integrated development environments，中文是整合式開發環境，但常常我們會簡稱成編輯器（editor），它能讓我們寫程式，並將我們的程式編譯（compile）成電腦熟悉的 0 和1 （binary）並執行它。[Visual Studio Code （vscode）](https://code.visualstudio.com/)是其中一個工程師最常用的 IDE。
+
+載好 vscode 後就可以嘗試著來執行剛剛的程式碼，前置作業是要新增一個資料夾，我是開了一個 cs50/week1 的資料夾路徑，並且用 vscode 打開，接著拉出 terminal ，依照以下圖片步驟來輸入：
+
+1. 透過 `touch hello.c` 來創一個檔案類型為 c 的檔案，名稱可以自己取，這邊稱作 hello，接著將剛剛的程式碼貼上。
+2. 透過 `make hello` 來編譯並產生 `hello` 的執行檔。
+3. 透過 `./hello` 來執行檔案，即可看到印出 `“hello, world”` 的結果。
+
+<PostImage
+    source="/static/images/cs50-week1/p3.png"
+    description=''
+/>
+
+整個流程像是以下這樣，在寫完 source code 後需要透過 compiler 來轉換成電腦看得懂的 binary 檔，也就是 machine code，電腦才知道你想執行什麼，若你改動的你的 source code，例如想從印 `“hello, world”` 改成 `“hello, cs50”`，你必須再執行一次 `make hello` 來編譯，否則 `./hello` 會是舊檔案的結果。
+
+<PostImage
+    source="/static/images/cs50-week1/p4.png"
+    description='<a target="_blank" href="https://rexpighj123.pixnet.net/blog/post/207609288-%E7%B7%A8%E8%AD%AF%E5%99%A8(compiler)%E8%88%87%E9%80%A3%E7%B5%90%E5%99%A8(linker)%E7%9A%84%E9%81%8B%E4%BD%9C%E5%8E%9F%E7%90%86">source</a>'
+/>
+
+📍 `printf(“hello, world\n”);` 的細節
+
+- `printf` 稱作 functions（函式），其結尾的 f 代表 formatted ，格式化輸出所寫的文字，也就是格式化輸出 `“”` 裡的內容。
+- `（）`稱作 parentheses （括號），放入括號的內容會稱作 argument（參數），輸出的東西如印出 `hello, world` 或是輸出音效都可稱作 side effects。
+- `;` 會像是中文的句號以及英文的 Period 一樣有結束此語句的效果。
+- `\n` 代表換行符，`\` 是 escape sequence （跳脫字元），表示在字串中我想透過 `\`以及後面的指令來達成某些效果。
+
+<PostImage
+    source="/static/images/cs50-week1/p5.png"
+    description='cs50'
+/>
+
+📍`int main(void);` 的細節：
+
+- 此行是每個 C 程式都會有的部分，為程式的進入點。
+- `main ()` 是名字為 `main` 的函式。
+- `int` 是整數的意思，表示這個 C 程式在執行結束時，會傳回一個整數值到作業系統。
+- `void` 表示空值，表示 `main` 這個函式不接受任何參數。
+
+📍`#include <stdio.h>`的細節：
+
+`#include` 是含括的意思，通常都是寫在最前面，會在編譯你寫的程式碼之前先編譯 `stdio.h` 這個文件（其中一種 header file），可以想成工具包的概念，header file 會伴隨著任何 c 的編譯器而存在，如 vs code（參考： [Where is “STDIO.H” located?](https://cboard.cprogramming.com/c-programming/97551-where-stdio-h-located.html)）。若你拿掉此行，有些 function 就無法作用，如 `printf` 。
+
+如果我們把程式碼改這樣：
+
+```c
+#include <stdio.h>
+#include <cs50.h>
+
+int main(void)
+{
+    string answer = get_string("What's your name? ");
+    printf("hello, answer\n");
+}
+```
+
+可以看到多了 `#include <cs50.h>` 和 `get_string` 這個函式，代表需要將載 `cs50.h` 這個 header file 才得以使用他們 cs50 團隊寫好的 `get_string`，下載的步驟根據下圖即可達成，中間可能會有要你輸入密碼，也就是你登入電腦的密碼，3b 的那一步則是和 `make hello` 一樣做編譯。
+
+<PostImage
+    source="/static/images/cs50-week1/p6.png"
+    description='<a target="_blank" href="https://github.com/cs50/libcs50/issues/189#issuecomment-693022677">source</a>'
+/>
+
+執行後結果如下，但是我們希望的結果是 `hello, Jensen` 而不是 `hello, answer`
+
+<PostImage
+    source="/static/images/cs50-week1/p7.png"
+    description=''
+/>
+
+我們將印出那一行改成以下，`%s` 則是 placeholder（佔位符），並將 answer 的變數放置後方當作參數傳給 `printf` ，中間會用逗號隔開。
+
+```c
+printf("hello, %s\n", answer);
+```
+
+改完後就會如我們所預期
+
+<PostImage
+    source="/static/images/cs50-week1/p8.png"
+    description=''
+/>
+
+或者有人會像以下這樣寫，但考量到不易讀，而且無法重複使用 answer 的狀況所以會建議使用上面的寫法。
+
+```c
+printf("hello, %s\n", get_string("What's your name? "));
+```
+
+接著要來了解一些名詞
+
+## Types, format codes, operators
+### 📍Types：
+
+在 C 語言中我們的變數（variables）會需要宣告型態（Types），其常見的型態如下：
+
+- `bool`： 用來表示布林值（ Boolean ）如 `true` 或是 `false。`
+- `char`：一個單一的字元如 `a` 或是 `2` ，對應 ASCII。
+- `float`：儲存十進位的浮點數。
+- `double`：透過更多的位元（digits）來儲存比 `float`更多的浮點數。
+- `int`：儲存整數，但是有其大小以及位數的限制 。
+- `long`：透過更多的位元（digits）來儲存比 `int` 更多的整數，一樣有其大小以及位數的限制。
+- `string` ：儲存一串字元。
+
+### 📍format codes：
+
+在 printf 中，對於各種 types 能透過 placeholder（佔位符）來表示該位子應該格式化成怎麼樣的資料型態，這樣的東西會被稱作 format codes：
+
+- `%c` ：表示 chars
+- `%f` ：表示 floats or doubles
+- `%i`：表示 ints
+- `%li` ：表示 long integers
+- `%s` ：表示 strings
+
+### 📍operators：
+
+被稱作數學運算子，常用的有以下：
+
+- `+` ：加法（addition）
+- `-` ：減法（subtraction）
+- `*` ：乘法（multiplication）
+- `/` ：除法（division）
+- `%` ：餘數（remainder）
+
+### 📍syntactic sugar
+
+透過程式語言提供一些更簡潔的寫法來達到同樣的功能，如以下我們宣告的叫做 `counter` 的變數，他的型態是整數，下一行則是將 `counter` 加一後重新賦值給 `counter` ，那透過更簡潔的語法就直接寫 ++ 即可，這就是語法糖。
+
+```c
+int counter = 0;
+counter = counter + 1
+/* 上面那行等於下面 */
+counter++
+```
+
+## 用 Calculations 的例子來了解型態大小的限制
+開一個 `calculator.c` 的檔案，加入以下程式碼
+
+```c
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    int x = get_int("x: ");
+    int y = get_int("y: ");
+    printf("%i\n", x + y);
+}
+```
+宣告整數 x 以及 y 的變數，透過 cs50 提供的函式 `get_int` 來取得數字，最後將其加總印出，如下 x 為 5 ，y 為 6 ，結果是 11 沒有問題。
+
+<PostImage
+    source="/static/images/cs50-week1/p9.png"
+    description=''
+/>
+
+接著嘗試將 1000000000 加 1000000000，結果是 2000000000，但到了 2000000000 加 2000000000 結果卻不是如想像的 4000000000。
+
+<PostImage
+    source="/static/images/cs50-week1/p10.png"
+    description=''
+/>
+
+原因是我們在宣告變數時使用 `int` 作為型別，而這個是有固定的 32 個位元（digits）（ 4 bytes），也就是總共它只能存 2 的 32 次方的數字，共 4294967296 個，但它還需要考慮到負數以及 0，所以它的範圍只能存 `-2147483648 ～ 2147483647` ，因此 4000000000 則表示溢位、溢出（Overflow）。
+
+> 補充：為什麼我透過 get_int 輸入 2147483647 會無法賦值？ 
+> 因爲在 cs50 的 library 可以看到 get_int 這個函式其接受的數字最大值應該比 2147483647 小
+
+因此需要將 x 、y 變數的型態變成 `long` ，2 的 64 次方（8 btyes）是 1`8446744073709551616` ，然後一樣要考慮到負數，所以範圍是 `-9223372036854775808 ～ 9223372036854775807` ，對此範圍就能夠解決剛剛溢位的問題。
+
+```c
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    // Prompt user for x
+    long x = get_long("x: ");
+
+    // Prompt user for y
+    long y = get_long("y: ");
+
+    // Perform addition
+    printf("%li\n", x + y);
+}
+```
+
+<PostImage
+    source="/static/images/cs50-week1/p11.png"
+    description=''
+/>
+
+> 補充：同個型若態在不同的作業系統下所使用的 bytes 會有所不同，因此儲存大小會不同。
+
+<PostImage
+    source="/static/images/cs50-week1/p12.png"
+    description='oracle docs'
+/>
+
+## Conditionals, Boolean expressions
+以剛剛的程式如果要判斷 x 和 y 就會需要用到 Conditionals 判斷式
+```c
+if (x < y)
+{
+    printf("x is less than y\n");
+}
+else if (x > y)
+{
+    printf("x is greater than y\n");
+}
+else if (x == y)
+{
+    printf("x is equal to y\n");
+}
+```
+
+但是最後一個等於的狀況 `x==y` 其實不用寫出來，因為程式若判斷到最後那也只剩 `x==y` 這狀況，所以就用 `else` 就好
+
+```c
+if (x < y)
+{
+    printf("x is less than y\n");
+}
+else if (x > y)
+{
+    printf("x is greater than y\n");
+}
+else
+{
+    printf("x is equal to y\n");
+}
+```
+
+若今天寫一個比較點數的大小的判斷式如下，輸入得值比 2 小則印出 You lost fewer points than me. 比 2 大則印出 You lost more points than me.
+
+```c
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    int points = get_int("How many points did you lose? ");
+
+    if (points < 2)
+    {
+        printf("You lost fewer points than me.\n");
+    }
+    else if (points > 2)
+    {
+        printf("You lost more points than me.\n");
+    }
+    else if (points == 2)
+    {
+        printf("You lost the same number of points as me.\n");
+    }
+}
+```
+
+但 2 其實在這個程式中為一個不變的數，因此可以利用 `const` 的宣告來告訴 complier 說這個值是不變的，並且在傳統上會以大寫作為變數名稱。
+
+```c
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    const int MINE = 2;
+    int points = get_int("How many points did you lose? ");
+
+    if (points < MINE)
+    {
+        printf("You lost fewer points than me.\n");
+    }
+    else if (points > MINE)
+    {
+        printf("You lost more points than me.\n");
+    }
+    else
+    {
+        printf("You lost the same number of points as me.\n");
+    }
+}
+```
+
+## Loops, functions
+在某些時候我們會需要重複做某些事情，舉例：印出三次 `meow`
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    printf("meow\n");
+    printf("meow\n");
+    printf("meow\n");
+}
+```
+但如果今天我們想印出一百次 `meow` ，我們一開始會想複製貼上 `printf`，但太麻煩也不準確，因此程式中有 loop 也就是迴圈的概念來幫助我們達到此效果，如以下以 `while loop` 的方式來寫，`i` 代表的是一個 counter，當 `i` 小於 3 則執行 `{}` 內的程式，最後記得要 `i++` 來讓 counter 加一。
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    int i = 0;
+    while (i < 3)
+    {
+        printf("meow\n");
+        i++;
+    }
+}
+```
+
+或是用 for loop 的方式來寫，其結果是相同的，只是將剛剛的動作寫在 for 定義的那一行：
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    for (int i = 0; i < 3; i++)
+    {
+        printf("meow\n");
+    }
+}
+```
+
+for loop 和 while loop 其中一個不同點在於宣告的 counter 在 loop 的方式只能在 `{}` 內來取用， while loop 則是迴圈結束後還能繼續用。
+我們接著可以將一些重複的動作提取成函式 function，如將 meow 變成函式，大部分的人會說這叫 abstract ，中文可能是抽象化，但這篇提到若翻譯成摘要/提取會更為準確，第一個 void 表示該函式不會回傳任何東西，第二個 void 表示不會傳入任何引數(argument)
+
+```c
+#include <stdio.h>
+
+void meow(void)
+{
+    printf("meow\n");
+}
+
+int main(void)
+{
+    for (int i = 0; i < 3; i++)
+    {
+        meow();
+    }
+}
+```
+
+若今天把 meow 這個函式擺在 main 函式的下方還能執行嗎？（如以下）
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    for (int i = 0; i < 3; i++)
+    {
+        meow();
+    }
+}
+
+void meow(void)
+{
+    printf("meow\n");
+}
+```
+
+答案是否定的，因為在 compile 階段它由上往下執行的時候找不到 meow 函式
+
+<PostImage
+    source="/static/images/cs50-week1/p13.png"
+    description=''
+/>
+
+因此若要將函式放在 main 下方則需要在最上方先提示 `void meow(void)`; 給 compile 說 meow 函式等等才會宣告
+```c
+#include <stdio.h>
+
+void meow(void);
+
+int main(void)
+{
+    for (int i = 0; i < 3; i++)
+    {
+        meow();
+    }
+}
+
+void meow(void)
+{
+    printf("meow\n");
+}
+```
+
+## 練習 loop：Mario
+今天想模擬馬力歐的方塊印出 `n x n` 的磚塊，可以用以下 do-while 的方式，他會先執行 do 裡面的程式，再檢查 n 是否大於 1，若小 1 則再執行一次 do 裡面的程式直到條件符合才會跑下去到 for loop，而想印出 `n x n` 的磚塊則需要透過雙層迴圈來做。
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    int n;
+    do
+    {
+        n = get_int("Size: ");
+    }
+    while (n < 1);
+
+    // For each row
+    for (int i = 0; i < n; i++)
+    {
+        // For each column
+        for (int j = 0; j < n; j++)
+        {
+            // Print a brick
+            printf("#");
+        }
+
+        // Move to next row
+        printf("\n");
+    }   
+}
+```
+
+```shell
+$ Size: 4
+####
+####
+####
+####
+```
+
+## Imprecision, overflow
+在處理小數點時需要注意 Floating point imprecision （浮點數不精確）的問題，其原因在於無法將無限的浮點數儲存在有限的位元中，如 `float` 是以 32 bits 來存小數點，存儲方式則是透過 IEEE 754 標準來逼近實際值，因此在運算時會出現違反常理的狀況，在以下例子中，將 x 和 y 以 `float` 的型態來儲存，最後將其小數點後印出 50 的小數，也就是接在 `%.` 後面的數，若沒加數字預設為 6 位數。
+
+```c
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    // Prompt user for x
+    float x = get_float("x: ");
+
+    // Prompt user for y
+    float y = get_float("y: ");
+
+    // Divide x by y
+    float z = x / y;
+
+    printf("%.50f\n", z);
+}
+```
+x 輸入 2，y 輸入 3
+
+```shell
+$ make calculator
+$ ./calculator
+x: 2
+y: 3
+0.66666668653488159179687500000000000000000000000000
+$ ./calculator
+```
+
+一般來說，2/3 的結果是 `0.666666...` 小數點後為無限個 6，但型態的位元是有限的，因此無法存得很精準，而且在有效位數後的數值變得很怪。
+
+<PostImage
+    source="/static/images/cs50-week1/p14.png"
+    description='<a href="https://learn.microsoft.com/zh-tw/cpp/c-language/type-float?view=msvc-170">類型 float</a>'
+/>
+
+因此在解決浮點數可以只取有效位數，在 float 儲存的有效數字為 6–7 位，用 double 的話可以有更高的精確度，但仍有其有效數字，因此透過 %.加上數字來截數就好。
+另外一個例子如下，若 amount 輸入的值是 `4.2` 結果會是… `419` ，也是因為浮點數不精確在搞鬼！
+
+```c
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    float amount = get_float("Dollar Amount: ");
+    int pennies = amount * 100;
+    printf("Pennies: %i\n", pennies);
+}
+```
+
+因此需要透過 `round` 的這個函式來進行四捨五入，結果才是對的。
+
+```c
+#include <cs50.h>
+#include <math.h>
+#include <stdio.h>
+
+int main(void)
+{
+    float amount = get_float("Dollar Amount: ");
+    int pennies = round(amount * 100);
+    printf("Pennies: %i\n", pennies);
+}
+```
+
+### 小結：
+距離上個筆記幾乎過了一個月，因為中間有些觀念對我來說也算是之前沒有碰過的，因此多花了很多時間，其中也有碰到一些問題，不過所幸有 cs50 的 discord 能發問才得到解答，總之，還好還沒放棄，沒意外的話還有下一篇！
+
+
+### 參考：
+1. [Where is "STDIO.H" located?](https://cboard.cprogramming.com/c-programming/97551-where-stdio-h-located.html)
+2. [A whole new world Topic: C 語言程式的基本架構](http://www.cchsu.com/arthur/prg_bg5/c/1.2.htm)
+3. [基本資料型態](http://kevin.hwai.edu.tw/~kevin/material/JAVA/PrimitiveDataType.htm)
+4. [你所不知道的 C 語言: 浮點數運算](https://hackmd.io/@sysprog/c-floating-point#BFloat16)
+5. [從 IEEE 754 標準來看為什麼浮點誤差是無法避免的](https://medium.com/starbugs/see-why-floating-point-error-can-not-be-avoided-from-ieee-754-809720b32175)
