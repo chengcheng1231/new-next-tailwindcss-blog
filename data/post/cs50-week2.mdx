@@ -1,0 +1,300 @@
+---
+title: '[CS50 學習筆記] week2 — 了解編譯、除錯與字串處理'
+date: 2022-12-30
+draft: false
+category: 'coding'
+author: Chengcheng
+imgSrc: '/static/images/cs50-week0/p1.png'
+tags: ['cs50']
+description: 了解編譯、除錯與字串處理
+---
+
+<PostImage
+    source="/static/images/cs50-week2/p1.png"
+    description='<a target="_blank" href="https://www.freecodecamp.org/news/harvard-cs50-guide/">freecodecamp</a>'
+/>
+
+索引：
+
+<TOCInline toc={props.toc} exclude="Overview" toHeading={2} />
+## 📍Compiling
+在上週使用 command line (cmd) `make + 檔名` 的方式來 compile 編譯 source code 成電腦看得懂的 machine code ，而 `make` 就是執行一個名叫 `clang` 的程式，所以若你用 `clang` 這個 cmd 來編譯也是能得到一樣的結果，差別在於 `make` 會輸出成和原檔名相同的 machine code 檔，但使用 `clang` 你若沒有指定輸出的檔名，那他預設的檔名會是 `a.out`
+
+```shell
+$ make hello // 編譯檔名為 hello 的 machine code
+$ clang hello.c // 編譯檔名為 a.out 的 machine code
+```
+
+所以可以傳 argument 引數給 command line 來定義編譯後的檔名為何，可以加在 `clang` 之後，source code 的檔名之前，並且前面要加上 `-o` ，代表 output 的縮寫。
+
+```shell
+$ clang -o hello hello.c // 編譯檔名為 hello 的 machine code
+```
+
+但若我們 source code 用到了其他的 head file 如課堂的 `<cs50.h>` ，在使用 `clang` 會需要在最後加上 `-lcs50` 代表告訴編譯器你引入外部函數或是外部變數明確的`位址` [（參考）](https://medium.com/@alastor0325/https-medium-com-alastor0325-compilation-to-linking-c07121e2803)，但這些步驟其實能靠 `make` 來做到。
+
+```c
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    string name = get_string("What's your name? ");
+    printf("hello, %s\n", name);
+}
+```
+    
+```shell
+$ clang -o hello hello.c -lcs50 // 編譯檔名為 hello 的 machine code
+```
+
+所以拆解一下 `make` 可以有以下四個步驟：
+
+1. Preprocessing（預處理）：主要是是將外部引入的東西作轉換，如將 `#include <cs50.h>` 這些外部引入的資源做轉換，也就是展成外部檔案裡面所有函式的 `prototype`，另外，刪掉註解也是在這個地方會做處理。補充：prototype 代表只取函式傳入的變數與型態、回傳的變數與型態、函式名稱，如 `string get_string(string prompt);` 是 cs50.h 其中一個函式，其不包含 `{}` 的內容。
+2. Compiling（編譯）：中間會將 source code 轉換成組合語言（assembly code），以及進行一些語法語意的分析，所以並非直接將 source code 直接轉換成 machine code 。
+3. Assembling（彙編）：將組合語言轉換成 binary 的 machine code。
+4. Linking（鏈接）：把這些轉換後的 machine code 組合成一個檔案並產出，也就是剛剛 `-lcs50` 指定在做的事。
+
+補充：1. mac 在本地端無法用 `make`? 可以參考此 issue[《Undefined symbols for architecture x86_64》](https://github.com/cs50/libcs50/issues/212) 2. 其他細節的可以參考[《淺談 c++ 編譯到鏈結的過程》](https://medium.com/@alastor0325/https-medium-com-alastor0325-compilation-to-linking-c07121e2803)。
+
+## 📍Debugging
+除錯是每個軟體工程師必經的一個過程，可以算是家常便飯，但 bug 這個詞最早被發現時其實真的是在指一隻實體的蛾跑進了一台名叫 Harvard Mark II 的電腦裡，造成了一些運行上的問題，這個故事發生在 1947 年。
+
+<iframe width="100%" height="500" src="https://www.youtube.com/embed/UPuTO9vg5gk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+在 cs50 所提供的遠端 vscode 能讓我們利用 `debug50` 這個指令來除錯並模擬電腦是如何一步步執行程式的，主要有幾個步驟：
+
+1. 設定 **breakpoint**，將滑鼠移到行數前面就會看到紅點，點選右鍵後就能看到設定中斷點的選項（或直接點紅點），意思是讓程式執行到那裡就先暫停。
+
+<PostImage
+    source="/static/images/cs50-week2/p2.png"
+    description='from cs50'
+/>
+
+2. terminal 的 tab 執行 `debug50 ./檔案名稱` 後會出現一個 debug console 的 tab。
+
+3. 回到 terminal 的 tab 後你可以透過按鈕（如下圖）去操作程式，分別的功用如下：
+
+- Continue：繼續執行程式直到下一個被設置的中斷點
+- Step over：執行下一行
+- Step into：跳進一個函式裡
+- Step out：跳出函式
+
+<PostImage
+    source="/static/images/cs50-week2/p3.png"
+    description='from cs50'
+/>
+
+在視窗的左半邊可以看到變數的狀態，就可知道每一步的狀態是什麼以便知道錯誤在哪。
+
+<PostImage
+    source="/static/images/cs50-week2/p4.png"
+    description='from cs50'
+/>
+
+## 📍Memory
+在電腦中有個我們很熟悉的晶片叫做 RAM，它可以儲存 0 和 1，因此當宣告變數時，它就會切一塊記憶體位置來儲存變數，在上一週提到不同的變數型態會有不同儲存的 bytes ，如 char 是存 1 byte，int 是存 4 bytes，因此它們會佔據記憶體內不同的大小。
+
+<PostImage
+    source="/static/images/cs50-week2/p5.png"
+    description='from cs50'
+/>
+
+## 📍Arrays
+在宣告變數時某些資料型態是相同的話我們就能夠用 Arrays，例如班上同學的成績、手搖飲料的價錢等等，如以下計算平均成績：
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    // 宣告三個變數來存成績
+    int score1 = 72;
+    int score2 = 73;
+    int score3 = 33;
+
+    printf("Average: %f\n", (score1 + score2 + score3) / 3); // 用 3.0 才能讓型輸出成 float
+}
+```
+
+在剛剛的記憶體中會像是以下這樣子，一個格子會是 1 byte，因此 int 的變數會佔據 4 bytes，以 0 和 1 表示的話會像下下張圖：
+
+<PostImage
+    source="/static/images/cs50-week2/p6.png"
+    description='from cs50'
+/>
+
+<PostImage
+    source="/static/images/cs50-week2/p7.png"
+    description='from cs50'
+/>
+
+但若使用 Arrays 的話會更好，因為成績都是屬於 `int` ，那將它們放在一起也好進行一些資料處理，可以像以下來表示，宣告名稱為 `scores` 的 Arrays，裡面有 3 個 `int` 的變數，然後用 `scores[index]` 來賦值，並且使用 `get_int` 來輸入成績。
+
+```c
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    int scores[3];
+
+    scores[0] = get_int("Score: ");
+    scores[1] = get_int("Score: ");
+    scores[2] = get_int("Score: ");
+
+    printf("Average: %f\n", (scores[0] + scores[1] + scores[2]) / 3.0);
+}
+```
+
+但以上程式也還是有一些多餘的程式碼，因此可以透過迴圈改成以下，並且設定 `n` 來代表 Arrays 裏有幾個變數。
+
+```c
+...
+  int n = get_int("How many scores? ");
+
+  int scores[n];
+
+  for (int i = 0; i < n; i++)
+  {
+    scores[i] = get_int("Score: ");
+  }
+...
+```
+
+## 📍Characters
+我們定義以下三個 `char` 變數後我們印出如以下：
+
+```c
+#include <stdio.h>
+  
+int main(void)
+{
+    char c1 = 'H';
+    char c2 = 'I';
+    char c3 = '!';
+  
+    printf("%c%c%c\n", c1, c2, c3); // HI!
+}
+```
+
+placeholder 換成 `%i` 能印出 ASCII
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    char c1 = 'H';
+    char c2 = 'I';
+    char c3 = '!';
+
+    printf("%i %i %i\n", c1, c2, c3); // 72 73 33
+}
+```
+
+或是可以寫成
+
+```c
+printf("%i %i %i\n", (int) c1, (int) c2, (int) c3); // 72 73 33
+```
+
+但若是將 `float` 轉換成 `int` 的時候會將小數位的這個資訊去除。
+
+📍String
+以剛剛的例子，我們可以透過字串來一次儲存字元的集合，因此 String 其實就是一串 characters （char）的 Arrays，但使用 String 會需要引入 `cs50.h`
+
+```c
+#include <cs50.h>
+#include <stdio.h>
+  
+int main(void)
+{
+    string s = "HI!";
+    printf("%s\n", s);
+}
+```
+
+一般來說如果一個一個 `char` 來儲存，其記憶體位置會像下圖，但如果用 string 來存就會是下下的圖，可以注意到在任何使用 string 的變數有個特特性是，它預設會在最後使用 `'\0'` 來告訴程式說這個是該 string 的結束點，因此也佔了一個 byte，全部的 bit 為 0，其 ASCII 也是 0。
+
+在以上的 `“HI!”` 其實使用了 4 bytes。
+
+<PostImage
+    source="/static/images/cs50-week2/p8.png"
+    description='from cs50'
+/>
+
+<PostImage
+    source="/static/images/cs50-week2/p9.png"
+    description='from cs50'
+/>
+
+另外，因為 String 就是一串 char 的 Arrays ，所以我們可以用迴圈的方式來得到 string 的長度：
+
+```c
+#include <cs50.h>
+#include <stdio.h>
+  
+int string_length(string s);
+  
+int main(void)
+{
+    string name = get_string("Name: ");
+    int length = string_length(name);
+    printf("%i\n", length);
+}
+  
+int string_length(string s)
+{
+    int i = 0;
+    while (s[i] != '\0') // 如果該位置不為 \0 就 i 加 1 並繼續
+    { 
+        i++;
+    }
+    return i;
+}
+```
+
+但在 cs50 的 string 函式庫就有這個函式，他的 head file 是 `string.h`
+
+```c
+#include <cs50.h>
+#include <stdio.h>
+#include <string.h>
+  
+int main(void)
+{
+    string name = get_string("Name: ");
+    int length = strlen(name);
+    printf("%i\n", length);
+}
+```
+更多的函式能到 [manual pages](https://manual.cs50.io/) 尋找
+
+## 📍Command-line arguments
+我們曉得 `./檔案名稱` 其代表的意義是呼叫 `main` 這個函式，但我們也能透過 command line 來傳引數進去作為 `main` 這個函式的變數，如下原本 `main` 這個函式的變數通常都是 `void`，但可以改成 `int argc, string argv[]`
+
+- `argc` 是你傳入的變數有幾個，例如：`./hello David` 算 2 個 `./hello David Jason` 算 3 個
+- `argv[]` 是陣列，以剛剛的範例來說會變 `["./hello","David"]` 和 `["./hello","David", "Jason"]`
+
+```c
+#include <stdio.h>
+#include <cs50.h>
+
+int main(int argc, string argv[])
+{
+    if (argc != 2)
+    {
+        printf("missing command-line argument\n");
+        return 1; // 返回 1 或非 0 的值表示失敗
+    }
+    printf("hello, %s\n", argv[1]);
+    return 0; // 返回 0 表示成功
+}
+```
+```shell
+$./hello David 
+hello, David
+```
+## 小結：
+在第二週的學習中，最有趣的部分是學到了變數在記憶體中的存儲方式。根據不同的型態，變數會佔用不同大小的記憶體空間，並且每個變數都有自己在記憶體中的位置(地址）。這使得我們需要注意 call by value 和 call by reference 的區別。前者僅僅是單純複製值，而後者則是複製變數在記憶體中的位置。總之，本週的學習讓我更加了解 C 語言的開發眉角，也期待能在作業學到更多東西。
