@@ -2,8 +2,8 @@
 name: Chengcheng
 avatar: /static/images/about-me.jpg
 occupation: Frontend Engineer
-company:
-email:
+company: ychsu.wk@gmail.com
+email: ychsu.wk@gmail.com
 twitter: https://twitter.com/Twitter
 linkedin: https://www.linkedin.com
 github: https://github.com
