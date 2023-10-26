@@ -1,0 +1,44 @@
+---
+title: 簡單紀錄人生中第一個接案
+date: 2023-10-27
+draft: false
+category: 'life'
+imgSrc: '/static/images/first-case/sprout.jpeg'
+description: ''
+tags: ['website']
+---
+
+<PostImage source="/static/images/first-case/sprout.jpeg" description="Photo by Majharul Islam on Unsplash" />
+
+這個案子是來自大學朋友委託，是用來為公司宣傳用的，網址為：[cocoonco2](https://www.cocoonco2.com/) ，主要是一家做減碳的化學水泥公司。
+
+一開始我們簡單透過 [Moqups](https://app.moqups.com/) 來進行 Wireframe 的溝通，確認我自己是否有能力做好並滿足客戶的需求，接著客戶擬好大概的設計稿後我依照設計稿去尋找合適的樣板，最後是使用 https://getnextjsthemes.com/product/bigspring-light-nextjs 這個樣板來進行更改。
+
+<PostImage source="/static/images/first-case/layout.jpeg" description="Final 的設計稿" />
+
+## 專案的主要功能：
+
+-   錨點定位：在各個 section 去綁上 id，在點擊 header 項目時網頁去 scroll 到該 section 位置。
+-   基本 RWD：這個原本的樣板就有設定，只是在 header 的部分需要考慮到如何將語言切換和錨點定位的項目做排版。
+-   切換語言 ([next-i18next](https://github.com/i18next/next-i18next#next-i18next))：有英文，繁體和簡體中文，預設會是英文，切換語言時網址也會加上該語言的後綴。
+-   自動發信（[email.js](https://www.emailjs.com/)）：這部分只要先在 email.js 上設定一些發信的 template 和拿到 id，接著回到 code 去綁定就能實踐自動寄信的功能，實際作法可以參考網路 [Email.js Tutorial](https://www.youtube.com/watch?v=bMq2riFCF90&ab_channel=ChaooCharles)，但在過程中有遇到一問題是，申請 email.js 的信箱帳號就必須是要收到自動寄信的那個信箱，不能先透過 A 信箱帳號去申請 email.js，然後在裡面再設定想要自動寄信到 B 信箱，當時是設定 outlook 有這樣的狀況，其他的信箱不確定是否有這個問題。
+
+## 部署：
+
+Vercel （與 github 連動，當推 code 後就會進行自動更新部署）
+
+## 網域：
+
+客戶自行購買 godaddy 網域，我再將其網域綁上 Vercel，Vercel 也有一些 ip 會需要到 godaddy 的後台設定。
+
+## 時間：
+
+整個過程前前後後兩個月，實際上的開發+前後期溝通應該花 30 個小時左右。
+
+<PostImage source="/static/images/first-case/timeline.jpeg" description="開發時間" />
+
+## 總結：
+
+這個專案是純前端，無後端與後台，所以我很肯定是我可以做到的，但也因為無後端與後台，若客戶需要更動裡面的內容，則需要透過我這邊來修改。其實最開心的部分除了有賺到一些酒水錢，也在此專案能多加熟悉原本應該熟悉的開發技巧，如 next-i18 的語言設定，或是拿到的 svg 檔若空白處太多，則可以先貼至 [editsvgcode](https://editsvgcode.com/) 來進行調整，主要是 viewBox 的數值在控制大小和留白處。而在這個專案上剛好朋友是軟體的 PM ，所以過程中並沒有太卡的地方，這部分我覺得也是減少很多溝通的關鍵點，總之，也滿感謝有這次的機會能夠磨練開發技術，然後，你能解決市場上什麼需求是你應該主動曝光的，而非等別人來挖掘。
+
+<PostImage source="/static/images/first-case/svg.jpeg" description="editsvgcode.com 能即時的裁切 svg" />
